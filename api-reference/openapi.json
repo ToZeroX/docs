@@ -95,45 +95,47 @@
           }
         }
       }
+    },
+    "/getAddress": {
+      "post": {
+        "description": "获取指定币种的充值地址",
+        "requestBody": {
+          "description": "请求参数",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/getAddress"
+              }
+            }
+          },
+          "required": true
+        },
+      }
     }
   },
   "components": {
     "schemas": {
-      "Plant": {
+      "getAddress": {
         "required": [
-          "name"
+          "symbol",
+          "sub_wallet_id",
+          "max_id"
         ],
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
+          "sub_wallet_id": {
+            "description": "主钱包ID",
+            "type": "integer"
+          },
+          "symbol": {
+            "description": "需要充值的币种，例如: (USDT)",
             "type": "string"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "max_id": {
+            "description": "地址起始id，默认传0",
+            "type": "integer"
           }
         }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
       },
       "Error": {
         "required": [
