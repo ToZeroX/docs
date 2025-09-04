@@ -14,6 +14,12 @@
         "tab": "API接口",
         "groups": [
           {
+            "group": "接口鉴权说明",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
             "group": "钱包",
             "pages": [
               "api-reference/endpoint/getAddress"

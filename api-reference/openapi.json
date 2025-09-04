@@ -96,7 +96,7 @@
         }
       }
     },
-    "/getAddress": {
+    "/api/mpc/sub_wallet/get/address/list": {
       "post": {
         "description": "获取指定币种的充值地址",
         "requestBody": {
