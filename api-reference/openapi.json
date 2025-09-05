@@ -99,81 +99,84 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer",
-                      "description": "收款id"
-                    },
-                    "sub_wallet_id": {
-                      "type": "integer",
-                      "description": "钱包id"
-                    },
-                    "symbol": {
-                      "type": "string",
-                      "description": "币种唯一标识，转账时使用，例：USDTERC20"
-                    },
-                    "created_at": {
-                      "type": "long",
-                      "description": "创建时间时间戳"
-                    },
-                    "updated_at": {
-                      "type": "long",
-                      "description": "修改时间时间戳"
-                    },
-                    "amount": {
-                      "type": "string",
-                      "description": "收款金额"
-                    },
-                    "address_from": {
-                      "type": "string",
-                      "description": "出币地址"
-                    },
-                    "address_to": {
-                      "type": "string",
-                      "description": "到账地址"
-                    },
-                    "memo": {
-                      "type": "string",
-                      "description": "到账地址memo，暂时忽略"
-                    },
-                    "txid": {
-                      "type": "string",
-                      "description": "交易hash"
-                    },
-                    "confirmations": {
-                      "type": "integer",
-                      "description": "区块确认数，例：10"
-                    },
-                    "status": {
-                      "type": "integer",
-                      "description": "收款状态包含以下几种：\n- 1000-未确认 \n- 1010-待KYT验证 \n- 1020-待KYT人工处理 \n- 1030-充值KYT熔断（待人工处理）\n- 1800-待溯源（保证交易安全）\n- 1900-待验证溯源（溯源完成，等待系统验证）\n- 2000-已完成 \n- 3000-异常 \n- 4000-资金退出",
-                      "enum": [1000, 1010, 1020, 1030, 1800, 1900, 2000, 3000, 4000]
-                    },
-                    "deposit_type": {
-                      "type": "integer",
-                      "description": "充值类型，1:普通币种充值，2: NFT充值",
-                      "enum": [1, 2]
-                    },
-                    "token_id": {
-                      "type": "string",
-                      "description": "NFT充值的tokenId，注：deposit_type=2时，该字段不为空"
-                    },
-                    "base_symbol": {
-                      "type": "string",
-                      "description": "转账币种唯一标识，例：ETH"
-                    },
-                    "contract_address": {
-                      "type": "string",
-                      "description": "转账币种合约地址"
-                    },
-                    "tx_height": {
-                      "type": "long",
-                      "description": "交易完成的区块高度"
-                    },
-                    "refund_amount": {
-                      "type": "string",
-                      "description": "资金退回金额"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "收款id"
+                      },
+                      "sub_wallet_id": {
+                        "type": "integer",
+                        "description": "钱包id"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "description": "币种唯一标识，转账时使用，例：USDTERC20"
+                      },
+                      "created_at": {
+                        "type": "long",
+                        "description": "创建时间时间戳"
+                      },
+                      "updated_at": {
+                        "type": "long",
+                        "description": "修改时间时间戳"
+                      },
+                      "amount": {
+                        "type": "string",
+                        "description": "收款金额"
+                      },
+                      "address_from": {
+                        "type": "string",
+                        "description": "出币地址"
+                      },
+                      "address_to": {
+                        "type": "string",
+                        "description": "到账地址"
+                      },
+                      "memo": {
+                        "type": "string",
+                        "description": "到账地址memo，暂时忽略"
+                      },
+                      "txid": {
+                        "type": "string",
+                        "description": "交易hash"
+                      },
+                      "confirmations": {
+                        "type": "integer",
+                        "description": "区块确认数，例：10"
+                      },
+                      "status": {
+                        "type": "integer",
+                        "description": "收款状态包含以下几种：\n- 1000-未确认 \n- 1010-待KYT验证 \n- 1020-待KYT人工处理 \n- 1030-充值KYT熔断（待人工处理）\n- 1800-待溯源（保证交易安全）\n- 1900-待验证溯源（溯源完成，等待系统验证）\n- 2000-已完成 \n- 3000-异常 \n- 4000-资金退出",
+                        "enum": [1000, 1010, 1020, 1030, 1800, 1900, 2000, 3000, 4000]
+                      },
+                      "deposit_type": {
+                        "type": "integer",
+                        "description": "充值类型，1:普通币种充值，2: NFT充值",
+                        "enum": [1, 2]
+                      },
+                      "token_id": {
+                        "type": "string",
+                        "description": "NFT充值的tokenId，注：deposit_type=2时，该字段不为空"
+                      },
+                      "base_symbol": {
+                        "type": "string",
+                        "description": "转账币种唯一标识，例：ETH"
+                      },
+                      "contract_address": {
+                        "type": "string",
+                        "description": "转账币种合约地址"
+                      },
+                      "tx_height": {
+                        "type": "long",
+                        "description": "交易完成的区块高度"
+                      },
+                      "refund_amount": {
+                        "type": "string",
+                        "description": "资金退回金额"
+                      }
                     }
                   }
                 }
@@ -202,81 +205,84 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer",
-                      "description": "收款id"
-                    },
-                    "sub_wallet_id": {
-                      "type": "integer",
-                      "description": "钱包id"
-                    },
-                    "symbol": {
-                      "type": "string",
-                      "description": "币种唯一标识，转账时使用，例：USDTERC20"
-                    },
-                    "created_at": {
-                      "type": "long",
-                      "description": "创建时间时间戳"
-                    },
-                    "updated_at": {
-                      "type": "long",
-                      "description": "修改时间时间戳"
-                    },
-                    "amount": {
-                      "type": "string",
-                      "description": "收款金额"
-                    },
-                    "address_from": {
-                      "type": "string",
-                      "description": "出币地址"
-                    },
-                    "address_to": {
-                      "type": "string",
-                      "description": "到账地址"
-                    },
-                    "memo": {
-                      "type": "string",
-                      "description": "到账地址memo，暂时忽略"
-                    },
-                    "txid": {
-                      "type": "string",
-                      "description": "交易hash"
-                    },
-                    "confirmations": {
-                      "type": "integer",
-                      "description": "区块确认数，例：10"
-                    },
-                    "status": {
-                      "type": "integer",
-                      "description": "收款状态包含以下几种：\n- 1000-未确认 \n- 1010-待KYT验证 \n- 1020-待KYT人工处理 \n- 1030-充值KYT熔断（待人工处理）\n- 1800-待溯源（保证交易安全）\n- 1900-待验证溯源（溯源完成，等待系统验证）\n- 2000-已完成 \n- 3000-异常 \n- 4000-资金退出",
-                      "enum": [1000, 1010, 1020, 1030, 1800, 1900, 2000, 3000, 4000]
-                    },
-                    "deposit_type": {
-                      "type": "integer",
-                      "description": "充值类型，1:普通币种充值，2: NFT充值",
-                      "enum": [1, 2]
-                    },
-                    "token_id": {
-                      "type": "string",
-                      "description": "NFT充值的tokenId，注：deposit_type=2时，该字段不为空"
-                    },
-                    "base_symbol": {
-                      "type": "string",
-                      "description": "转账币种唯一标识，例：ETH"
-                    },
-                    "contract_address": {
-                      "type": "string",
-                      "description": "转账币种合约地址"
-                    },
-                    "tx_height": {
-                      "type": "long",
-                      "description": "交易完成的区块高度"
-                    },
-                    "refund_amount": {
-                      "type": "string",
-                      "description": "资金退回金额"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "收款id"
+                      },
+                      "sub_wallet_id": {
+                        "type": "integer",
+                        "description": "钱包id"
+                      },
+                      "symbol": {
+                        "type": "string",
+                        "description": "币种唯一标识，转账时使用，例：USDTERC20"
+                      },
+                      "created_at": {
+                        "type": "long",
+                        "description": "创建时间时间戳"
+                      },
+                      "updated_at": {
+                        "type": "long",
+                        "description": "修改时间时间戳"
+                      },
+                      "amount": {
+                        "type": "string",
+                        "description": "收款金额"
+                      },
+                      "address_from": {
+                        "type": "string",
+                        "description": "出币地址"
+                      },
+                      "address_to": {
+                        "type": "string",
+                        "description": "到账地址"
+                      },
+                      "memo": {
+                        "type": "string",
+                        "description": "到账地址memo，暂时忽略"
+                      },
+                      "txid": {
+                        "type": "string",
+                        "description": "交易hash"
+                      },
+                      "confirmations": {
+                        "type": "integer",
+                        "description": "区块确认数，例：10"
+                      },
+                      "status": {
+                        "type": "integer",
+                        "description": "收款状态包含以下几种：\n- 1000-未确认 \n- 1010-待KYT验证 \n- 1020-待KYT人工处理 \n- 1030-充值KYT熔断（待人工处理）\n- 1800-待溯源（保证交易安全）\n- 1900-待验证溯源（溯源完成，等待系统验证）\n- 2000-已完成 \n- 3000-异常 \n- 4000-资金退出",
+                        "enum": [1000, 1010, 1020, 1030, 1800, 1900, 2000, 3000, 4000]
+                      },
+                      "deposit_type": {
+                        "type": "integer",
+                        "description": "充值类型，1:普通币种充值，2: NFT充值",
+                        "enum": [1, 2]
+                      },
+                      "token_id": {
+                        "type": "string",
+                        "description": "NFT充值的tokenId，注：deposit_type=2时，该字段不为空"
+                      },
+                      "base_symbol": {
+                        "type": "string",
+                        "description": "转账币种唯一标识，例：ETH"
+                      },
+                      "contract_address": {
+                        "type": "string",
+                        "description": "转账币种合约地址"
+                      },
+                      "tx_height": {
+                        "type": "long",
+                        "description": "交易完成的区块高度"
+                      },
+                      "refund_amount": {
+                        "type": "string",
+                        "description": "资金退回金额"
+                      }
                     }
                   }
                 }
