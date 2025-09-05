@@ -102,7 +102,7 @@
         "requestBody": {
           "description": "请求参数",
           "content": {
-            "application/json": {
+            "application/x-www-form-urlencoded": {
               "schema": {
                 "$ref": "#/components/schemas/getAddress"
               }
@@ -110,6 +110,18 @@
           },
           "required": true
         },
+        "responses": {
+          "200": {
+            "description": "plant response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getAddressRes"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -132,8 +144,21 @@
             "type": "string"
           },
           "max_id": {
-            "description": "地址起始id，默认传0",
+            "description": "需要查询的地址id，传0返回多个",
             "type": "integer"
+          }
+        }
+      },
+      "getAddressRes": {
+        "description": "请求成功返回结构",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "创建的地址"
+          },
+          "addr_type": {
+            "type": "integer",
+            "description": "地址类型，可忽略， 1: 用户地址，2: 系统地址"
           }
         }
       },
