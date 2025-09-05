@@ -21,7 +21,6 @@
   "paths": {
     "/api/mpc/sub_wallet/get/address/list": {
       "post": {
-        "description": "获取指定币种的充值地址",
         "requestBody": {
           "description": "请求参数",
           "content": {
@@ -63,7 +62,7 @@
             "type": "integer"
           },
           "symbol": {
-            "description": "需要充值的币种，例如: (USDT)",
+            "description": "需要充值的币种，例如: (USDTERC20)",
             "type": "string"
           },
           "max_id": {
@@ -81,6 +80,10 @@
           "addr_type": {
             "type": "integer",
             "description": "地址类型，可忽略， 1: 用户地址，2: 系统地址"
+          },
+          "memo": {
+            "type": "string",
+            "description": "暂时忽略"
           }
         }
       },
