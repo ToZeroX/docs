@@ -1,0 +1,45 @@
+---
+title: '加密说明'
+---
+
+## 分段加密
+
+toBase64UrlSafe参考 [toBase64UrlSafe](/base64#tobase64urlsafe)
+
+``` javascript
+  const crypto = require('crypto');
+
+  /**
+   * 私钥加密
+   * @param {string} message - 要加密的消息
+   * @param {string} privateKey - 私钥
+   */
+  function privateEncrypt(message, privateKey) {
+    const encryptedBuf = crypto.privateEncrypt(
+      {
+        key,
+        padding: crypto.constants.RSA_PKCS1_PADDING, // 必须用 PKCS1 v1.5
+      },
+      Buffer.isBuffer(message) ? message : Buffer.from(message, "utf8")
+    );
+    return toBase64UrlSafe(encryptedBuf);
+  }
+
+  /**
+   * 构建payload
+   * @param {object} requestBody 请求体, 具体字段参考接口说明
+   * @param {string} appId 商户id，由我方提供，暂不支持自己生成
+   * @param {string} privateKey 私钥，由我方提供，暂不支持自己生成
+   */
+  function buildPayload(requestBody, appId, privateKey) {
+    const dataB64Url = privateEncrypt(JSON.stringify(requestBody), privateKey);
+    return {
+      app_id,
+      data: dataB64Url,
+    };
+  }
+
+  // 使用示例
+  // payload为最后请求api时，需要携带的参数: { app_id: 'appId', data: 'dataB64Url' }
+  const payload = buildPayload({ symbol: 'USDT' }, 'appId', 'privateKey');
+```

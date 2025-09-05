@@ -7,22 +7,46 @@
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
+  "api": {
+    "playground": {
+      "display": "simple"
+    },
+    "examples": { "languages": [] }
+  },
   "navigation": {
     "tabs": [
       {
         "tab": "API接口",
         "groups": [
           {
-            "group": "接口鉴权说明",
+            "group": "统一说明",
             "pages": [
-              "api-reference/introduction"
+              "index",
+              "request",
+              "base64",
+              "encrypt",
+              "decrypt"
             ]
           },
           {
-            "group": "钱包",
+            "group": "接口说明",
             "pages": [
-              "api-reference/endpoint/getAddress"
+              "api-reference/endpoint/createAddress",
+              "api-reference/endpoint/getDepositAllList",
+              "api-reference/endpoint/getDepositList"
+            ]
+          },
+          {
+            "group": "交易回调通知",
+            "pages": [
+              "webhook-deposit"
+            ]
+          },
+          {
+            "group": "错误码",
+            "pages": [
+              "error-code"
             ]
           }
         ]

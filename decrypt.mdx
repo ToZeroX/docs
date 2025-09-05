@@ -1,0 +1,39 @@
+---
+title: '解密说明'
+---
+
+## 分段解密
+
+fromBase64UrlSafe参考 [fromBase64UrlSafe](/base64#formbase64urlsafe)
+
+``` javascript
+  const crypto = require('crypto');
+
+  /**
+   * 公钥解密
+   * @param {string} base64urlCipher base64url编码的密文
+   * @param {string} publicKey 公钥, 由我方提供，暂不支持自己生成
+   * @return {string} 解密后的明文
+   */
+  function decryptWithPublic(base64urlCipher, publicKey) {
+    const b64 = fromBase64UrlSafe(base64urlCipher)
+    const cipherBuf = Buffer.from(b64, 'base64');
+
+    const chunkSize = 256;
+    const out = [];
+    for (let i = 0; i < cipherBuf.length; i += chunkSize) {
+      const chunk = cipherBuf.slice(i, i + chunkSize);
+      const enc = crypto.publicDecrypt(
+        { key: publicKey, padding: constants.RSA_PKCS1_PADDING },
+        chunk
+      );
+      out.push(enc);
+    }
+
+    return Buffer.concat(out).toString('utf8');
+  }
+
+  // 使用示例
+  const resJson = decrypt('从接口获取到的加密data字符串');
+  const resData = JSON.parse(resJson);
+```

@@ -1,0 +1,31 @@
+---
+title: '收款异步回调通知'
+---
+
+## 请求地址
+
+<code>https://openapi.nusd.me/webhook</code>
+
+## 请求参数
+
+| Param           | 类型    | 是否必须 | 说明                                                                                       |
+|-----------------|---------|----------|------------------------------------------------------------------------------------------|
+| charset         | String  | 是       | 编码格式，无特殊情况，传参数 **utf-8**                                                     |
+| side            | String  | 是       | 通知类型，收款通知: `deposit`，转账通知: `withdraw`，Web3交易通知: `web3-trans`，Tron资源购买交易通知: `tron-delegate-trans` |
+| notify_time     | String  | 是       | 通知时间，例如: 2025-09-01 00:00:00                                                     |
+| id              | String  | 是       | 收款id                                                                                    |
+| sub_wallet_id   | String  | 是       | 钱包id                                                                                    |
+| symbol          | String  | 是       | 币种唯一标识，例如: USDTERC20                                                             |
+| amount          | String  | 是       | 收款金额                                                                                  |
+| created_at      | String  | 是       | 创建时间，例如: 2025-09-01 00:00:00                                                       |
+| updated_at      | String  | 是       | 修改时间，例如: 2025-09-01 00:00:00                                                     |
+| address_from    | String  | 是       | 出币地址                                                                                  |
+| address_to      | String  | 是       | 到帐地址                                                                                  |
+| memo            | String  | 否       | 到帐地址memo                                                                              |
+| txid            | String  | 是       | 交易hash                                                                                  |
+| confirmations   | Integer | 是       | 区块确认数，例如: 10                                                                      |
+| status          | Integer | 是       | 收款状态（1000大确认、1010待KYT验证、1020待KYT人工处理、1800待溯源、1900待链溯源确认、2000已完成、3000异常、4000资金退回）。详见“详细请参考”。 |
+| base_symbol     | String  | 是       | 收款币种主链唯一标识，例如: ETH                                                           |
+| contract_address| String  | 否       | 收款币种合约地址                                                                          |
+| tx_height       | Long    | 是       | 交易完成的区块高度                                                                        |
+| refund_amount   | String  | 是       | 资金退回金额                                                                              |

@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "OpenAPI Store",
+    "description": "NUSD API",
     "license": {
       "name": "MIT"
     },
@@ -10,96 +10,278 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
+      "url": "https://openapi.nusd.me"
     }
   ],
   "paths": {
-    "/api/mpc/sub_wallet/get/address/list": {
+    "/api/mpc/sub_wallet/create/address": {
       "post": {
+        "summary": "创建地址",
+        "description": "为指定的币种创建地址",
         "requestBody": {
-          "description": "请求参数",
+          "required": true,
           "content": {
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/getAddress"
+                "type": "object",
+                "properties": {
+                  "sub_wallet_id": {
+                    "type": "integer",
+                    "description": "钱包id",
+                    "example": 12345
+                  },
+                  "symbol": {
+                    "type": "string",
+                    "description": "币种唯一标识，支持以下类型：\n- USDTERC20 : Ethereum\n- TUSDT : TRON\n- USDTBEP20 : BNB Smart Chain\n- USDTBASE : Base\n- USDTSOL : Solana\n- USDTARB : Arbitrum",
+                    "enum": [
+                      "USDTERC20",
+                      "TUSDT",
+                      "USDTBEP20",
+                      "USDTBASE",
+                      "USDTSOL",
+                      "USDTARB"
+                    ]
+                  }
+                },
+                "required": ["sub_wallet_id", "symbol"]
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "description": "返回数据",
           "200": {
+            "description": "成功创建地址",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/getAddressRes"
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "创建的地址"
+                    },
+                    "addr_type": {
+                      "type": "integer",
+                      "description": "地址类型，1：用户地址，2：系统地址"
+                    },
+                    "memo": {
+                      "type": "string",
+                      "description": "暂时忽略"
+                    },
+                    "id": {
+                      "type": "integer",
+                      "description": "创建的钱包id"
+                    }
+                  }
                 }
               }
             }
           }
         }
       }
-    }
-  },
-  "components": {
-    "schemas": {
-      "getAddress": {
-        "required": [
-          "symbol",
-          "sub_wallet_id",
-          "max_id"
+    },
+    "/api/mpc/billing/deposit_list": {
+      "get": {
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "多个id，使用英文逗号分隔，例：123,345",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
-        "type": "object",
-        "properties": {
-          "sub_wallet_id": {
-            "description": "主钱包ID",
-            "type": "integer"
-          },
-          "symbol": {
-            "description": "需要充值的币种，例如: (USDTERC20)",
-            "type": "string"
-          },
-          "max_id": {
-            "description": "需要查询的地址id，传0返回多个",
-            "type": "integer"
+        "responses": {
+          "200": {
+            "description": "成功返回收款记录列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "收款id"
+                    },
+                    "sub_wallet_id": {
+                      "type": "integer",
+                      "description": "钱包id"
+                    },
+                    "symbol": {
+                      "type": "string",
+                      "description": "币种唯一标识，转账时使用，例：USDTERC20"
+                    },
+                    "created_at": {
+                      "type": "long",
+                      "description": "创建时间时间戳"
+                    },
+                    "updated_at": {
+                      "type": "long",
+                      "description": "修改时间时间戳"
+                    },
+                    "amount": {
+                      "type": "string",
+                      "description": "收款金额"
+                    },
+                    "address_from": {
+                      "type": "string",
+                      "description": "出币地址"
+                    },
+                    "address_to": {
+                      "type": "string",
+                      "description": "到账地址"
+                    },
+                    "memo": {
+                      "type": "string",
+                      "description": "到账地址memo，暂时忽略"
+                    },
+                    "txid": {
+                      "type": "string",
+                      "description": "交易hash"
+                    },
+                    "confirmations": {
+                      "type": "integer",
+                      "description": "区块确认数，例：10"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "收款状态包含以下几种：\n- 1000-未确认 \n- 1010-待KYT验证 \n- 1020-待KYT人工处理 \n- 1030-充值KYT熔断（待人工处理）\n- 1800-待溯源（保证交易安全）\n- 1900-待验证溯源（溯源完成，等待系统验证）\n- 2000-已完成 \n- 3000-异常 \n- 4000-资金退出",
+                      "enum": [1000, 1010, 1020, 1030, 1800, 1900, 2000, 3000, 4000]
+                    },
+                    "deposit_type": {
+                      "type": "integer",
+                      "description": "充值类型，1:普通币种充值，2: NFT充值",
+                      "enum": [1, 2]
+                    },
+                    "token_id": {
+                      "type": "string",
+                      "description": "NFT充值的tokenId，注：deposit_type=2时，该字段不为空"
+                    },
+                    "base_symbol": {
+                      "type": "string",
+                      "description": "转账币种唯一标识，例：ETH"
+                    },
+                    "contract_address": {
+                      "type": "string",
+                      "description": "转账币种合约地址"
+                    },
+                    "tx_height": {
+                      "type": "long",
+                      "description": "交易完成的区块高度"
+                    },
+                    "refund_amount": {
+                      "type": "string",
+                      "description": "资金退回金额"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
-      },
-      "getAddressRes": {
-        "properties": {
-          "address": {
-            "type": "string",
-            "description": "创建的地址"
-          },
-          "addr_type": {
-            "type": "integer",
-            "description": "地址类型，可忽略， 1: 用户地址，2: 系统地址"
-          },
-          "memo": {
-            "type": "string",
-            "description": "暂时忽略"
+      }
+    },
+    "/api/mpc/billing/sync_deposit_list": {
+      "get": {
+        "parameters": [
+          {
+            "name": "max_id",
+            "in": "query",
+            "description": "收款记录起始id，例100，系统将返回101后的所有交易信息，传0会返回所有数据",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
         ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
+        "responses": {
+          "200": {
+            "description": "成功返回收款记录列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "收款id"
+                    },
+                    "sub_wallet_id": {
+                      "type": "integer",
+                      "description": "钱包id"
+                    },
+                    "symbol": {
+                      "type": "string",
+                      "description": "币种唯一标识，转账时使用，例：USDTERC20"
+                    },
+                    "created_at": {
+                      "type": "long",
+                      "description": "创建时间时间戳"
+                    },
+                    "updated_at": {
+                      "type": "long",
+                      "description": "修改时间时间戳"
+                    },
+                    "amount": {
+                      "type": "string",
+                      "description": "收款金额"
+                    },
+                    "address_from": {
+                      "type": "string",
+                      "description": "出币地址"
+                    },
+                    "address_to": {
+                      "type": "string",
+                      "description": "到账地址"
+                    },
+                    "memo": {
+                      "type": "string",
+                      "description": "到账地址memo，暂时忽略"
+                    },
+                    "txid": {
+                      "type": "string",
+                      "description": "交易hash"
+                    },
+                    "confirmations": {
+                      "type": "integer",
+                      "description": "区块确认数，例：10"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "description": "收款状态包含以下几种：\n- 1000-未确认 \n- 1010-待KYT验证 \n- 1020-待KYT人工处理 \n- 1030-充值KYT熔断（待人工处理）\n- 1800-待溯源（保证交易安全）\n- 1900-待验证溯源（溯源完成，等待系统验证）\n- 2000-已完成 \n- 3000-异常 \n- 4000-资金退出",
+                      "enum": [1000, 1010, 1020, 1030, 1800, 1900, 2000, 3000, 4000]
+                    },
+                    "deposit_type": {
+                      "type": "integer",
+                      "description": "充值类型，1:普通币种充值，2: NFT充值",
+                      "enum": [1, 2]
+                    },
+                    "token_id": {
+                      "type": "string",
+                      "description": "NFT充值的tokenId，注：deposit_type=2时，该字段不为空"
+                    },
+                    "base_symbol": {
+                      "type": "string",
+                      "description": "转账币种唯一标识，例：ETH"
+                    },
+                    "contract_address": {
+                      "type": "string",
+                      "description": "转账币种合约地址"
+                    },
+                    "tx_height": {
+                      "type": "long",
+                      "description": "交易完成的区块高度"
+                    },
+                    "refund_amount": {
+                      "type": "string",
+                      "description": "资金退回金额"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
