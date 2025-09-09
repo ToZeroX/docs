@@ -2,35 +2,14 @@
 title: '域名及 API 密钥'
 ---
 
-<Note>
+{/* <Note>
   所有公钥，私钥，暂时由我们来提供，无需手动生成，以下说明只作为生成参考
-</Note>
+</Note> */}
 
 请求域名 <code>https://openapi.nusd.me/</code>
 
 | 字段             | 说明                                                                 |
 | ---------------- | -------------------------------------------------------------------- |
-| **app_id**       | 请联系我们获取                                                     |
-{/* | **rsa_wallet_pub** | Custody 系统公钥；请创建钱包后从 Custody 系统获取                   |
-| **rsa_third_prv**  | 客户私钥；自主生成、保存                                            |
-| **rsa_third_pub**  | 客户公钥；自主生成，请创建钱包后配置到 Custody 系统                 |
-| **rsa_co_signer_pri** | Co-Signer 私钥；使用 Co-Signer 生成，或自主生成、保存            |
-| **rsa_co_signer_pub** | Co-Signer 公钥；使用 Co-Signer 生成，或自主生成；请创建钱包后配置到 Custody 系统 | */}
-
-
-## RSA公私钥格式
-
-密码长度：2048
-
-密钥格式：PKCS#8
-
-``` shell
-openssl genrsa -out rsa_private_key.pem 2048
-
-openssl rsa -in rsa_private_key.pem -pubout -out rsa_public_key_2048.pem
-
-openssl pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform pem -nocrypt -out private_pkcs8.pem
-
-```
-
-其中：<code>rsa_public_key_2048.pem</code>为公钥文件，<code>private_pkcs8.pem</code>为私钥文件
+| **API_KEY**       | 请联系我们获取                                                     |
+| **API_SECRET**       | 请联系我们获取                                                     |
+| **wallet_id**       | 钱包id，请联系我们获取                                                     |

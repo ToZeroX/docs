@@ -1,0 +1,68 @@
+---
+title: '交易状态说明'
+---
+
+本指南帮助理解钱包系统中的交易状态和子状态。
+
+---
+
+## Deposits（充值）
+
+| Status        | Sub-Status                  | 描述                            |
+|:---------------|:-----------------------------|:---------------------------------|
+| PendingReview | PendingDepositCreation      | 交易正在审核以便在钱包系统中创建。 |
+| Confirming    | PendingDepositConfirmations | 交易正在等待链上确认。             |
+| Completed     | N/A                         | 交易已被确认并记录。               |
+| Failed        | FailedDepositProcessing     | 交易处理失败。                     |
+
+---
+
+## Withdrawals（提现）
+
+| Status        | Sub-Status                          | 描述                             |
+|:---------------|:-------------------------------------|:----------------------------------|
+| Reviewing     | N/A                                 | 交易正在审核中。                   |
+| PendingReview | PendingWithdrawCreation             | 交易正在等待创建。                  |
+|               | PendingAML/KYCReview                | 交易正在等待 AML/KYC 审核。        |
+|               | PendingRiskControl                  | 交易正在等待风控审核。               |
+|               | PendingApproval                     | 交易正在等待审批。                   |
+|               | PendingAddressWhitelistChecking     | 交易正在等待地址白名单检查。          |
+|               | PendingWithdrawProcessing           | 交易正在等待提现处理。               |
+|               | FailedAML/KYCReview                 | 交易未通过 AML/KYC 审核。          |
+|               | FailedRiskControl                   | 交易未通过风控审核。                  |
+|               | FailedApproval                      | 交易未通过审批。                      |
+|               | FailedAddressWhitelistChecking      | 交易未通过地址白名单检查。             |
+| Confirming    | PendingBroadcast                    | 交易正在等待广播。                   |
+|               | PendingOnChainConfirmations         | 交易正在等待链上确认。                 |
+| Completed     | N/A                                 | 交易已完成。                         |
+| Failed        | FailedAML/KYCReview                 | 交易未通过 AML/KYC 审核。          |
+|               | FailedRiskControl                   | 交易未通过风控审核。                  |
+|               | FailedApproval                      | 交易未通过审批。                      |
+|               | FailedAddressWhitelistChecking      | 交易未通过地址白名单检查。             |
+|               | FailedWithdrawProcessing            | 交易提现处理失败。                     |
+|               | RejectedByUser                      | 交易被用户拒绝。                       |
+|               | FailedBySystemCheck                 | 交易因系统检查失败。                   |
+|               | FailedByUpstream                    | 交易因上游系统失败。                   |
+|               | FailedByUnknownReason               | 交易因未知原因失败。                   |
+
+---
+
+## Transfers（转账）
+
+| Status        | Sub-Status                          | 描述                               |
+|:---------------|:-------------------------------------|:------------------------------------|
+| Completed     | N/A                                 | 交易成功完成。                       |
+| PendingReview | PendingTransferCreation             | 交易正在等待在钱包系统中创建。         |
+|               | PendingRiskControl                  | 交易正在等待风控审核。                 |
+|               | PendingApproval                     | 交易正在等待审批。                     |
+|               | PendingAddressWhitelistChecking     | 交易正在等待地址白名单检查。            |
+| Confirming    | PendingBroadcast                    | 交易正在等待广播。                     |
+|               | PendingOnChainConfirmations         | 交易正在等待链上确认。                   |
+| Completed     | N/A                                 | 交易已完成。                           |
+| Failed        | FailedRiskControl                   | 交易未通过风控审核。                    |
+|               | FailedApproval                      | 交易未通过审批。                        |
+|               | FailedAddressWhitelistChecking      | 交易未通过地址白名单检查。               |
+|               | FailedByUpstream                    | 交易因上游系统失败。                     |
+|               | FailedByUnknownReason               | 交易因未知原因失败。                     |
+
+---

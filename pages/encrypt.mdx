@@ -1,45 +1,44 @@
 ---
-title: '加密说明'
+title: 'API 签名'
 ---
 
-## 分段加密
+## 计算 API 签名
 
-toBase64UrlSafe参考 [toBase64UrlSafe](/base64#tobase64urlsafe)
+以下步骤介绍如何计算 API 签名。
 
-``` javascript
-  const crypto = require('crypto');
+1. 首先，基于您的请求拼接出一个字符串，如下所示：
 
-  /**
-   * 私钥加密
-   * @param {string} message - 要加密的消息
-   * @param {string} privateKey - 私钥
-   */
-  function privateEncrypt(message, privateKey) {
-    const encryptedBuf = crypto.privateEncrypt(
-      {
-        key,
-        padding: crypto.constants.RSA_PKCS1_PADDING, // 必须用 PKCS1 v1.5
-      },
-      Buffer.isBuffer(message) ? message : Buffer.from(message, "utf8")
-    );
-    return toBase64UrlSafe(encryptedBuf);
-  }
 
-  /**
-   * 构建payload
-   * @param {object} requestBody 请求体, 具体字段参考接口说明
-   * @param {string} appId 商户id，由我方提供，暂不支持自己生成
-   * @param {string} privateKey 私钥，由我方提供，暂不支持自己生成
-   */
-  function buildPayload(requestBody, appId, privateKey) {
-    const dataB64Url = privateEncrypt(JSON.stringify(requestBody), privateKey);
-    return {
-      app_id,
-      data: dataB64Url,
-    };
-  }
+    str_to_sign = <code>\{METHOD\}|\{PATH\}|\{TIMESTAMP\}|\{PARAMS\}|\{BODY\}</code>
 
-  // 使用示例
-  // payload为最后请求api时，需要携带的参数: { app_id: 'appId', data: 'dataB64Url' }
-  const payload = buildPayload({ symbol: 'USDT' }, 'appId', 'privateKey');
-```
+    | 字段      | 描述                                                                 | 示例                                                                 |
+    |:-----------|:----------------------------------------------------------------------|:----------------------------------------------------------------------|
+    | **METHOD**    | HTTP 方法。                                                          | `GET`                                                               |
+    | **PATH**      | API 端点。                                                           | `/v2/transactions/transfer`                                         |
+    | **TIMESTAMP** | 以毫秒为单位的当前 Unix 时间戳。该值必须与请求头中的随机数相同。     | `1718587017026`                                                     |
+    | **PARAMS**    | 查询参数。                                                   | `chain_id=ETH&limit=10`                                             |
+    | **BODY**      | 原始请求包体的字符串格式。                                   | `{"wallet_type":"Custodial"}`   |
+
+    <Note>
+      PARAMS和BODY字段是可选的，如果没有对应参数的话，留空字符串
+    </Note>
+
+2. 使用 <code>hashlib</code> 库对字符串进行两次 SHA-256 哈希，如下所示：
+
+    ``` python
+      import hashlib
+      content_hash = hashlib.sha256(hashlib.sha256(str_to_sign.encode()).digest()).digest()
+    ```
+
+3. 使用 **API Secret** 对字符串进行签名，如下所示：
+
+    ``` python
+      from nacl.signing import SigningKey
+
+      # 创建 Ed25519 签名密钥。将 `api_secret` 替换为您的 API Secret
+      sk = SigningKey(bytes.fromhex(api_secret))
+      # 签署哈希后的消息
+      signature = sk.sign(content_hash).signature.hex()
+    ```
+
+现在您已经计算出了一个 API 签名。

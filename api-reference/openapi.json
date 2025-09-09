@@ -1,288 +1,648 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
-    "title": "OpenAPI Store",
-    "description": "NUSD API",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+    "title": "NUSD Wallet API",
+    "version": "v2"
   },
-  "servers": [
-    {
-      "url": "https://openapi.nusd.me"
+  "components": {
+    "securitySchemes": {
+      "BizApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "BIZ-API-KEY",
+        "description": "API Key，请求需在请求头中携带。"
+      },
+      "BizApiNonce": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Biz-Api-Nonce",
+        "description": "时间戳，请求需在请求头中携带。"
+      },
+      "BizApiSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Biz-Api-Signature",
+        "description": "签名串，请求需在请求头中携带。"
+      }
+    },
+    "schemas": {
+      "CreateAddressesRequest": {
+        "type": "object",
+        "required": ["chain_id", "count"],
+        "properties": {
+          "chain_id": {
+            "type": "string",
+            "description": "链 ID，区块链的唯一标识。\n 可用选项 \n - ETH: Ethereum Chain \n - BASE_ETH: Base Chain"
+          },
+          "count": {
+            "type": "integer",
+            "description": "要生成的地址数量。允许范围：1 ≤ count ≤ 50。",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 1,
+            "example": 1
+          },
+          "taproot_script_tree_hashes": {
+            "type": "array",
+            "description": "用于生成 Tweaked Taproot 地址的脚本树哈希列表。仅在生成 Tweaked Taproot 地址时必填。",
+            "items": { "type": "string" }
+          },
+          "taproot_internal_address": {
+            "type": "string",
+            "description": "原始（未调整）Taproot 地址。仅在生成 Tweaked Taproot 地址时必填。",
+            "example": "3JWy6ta57t9Y7y1UfVPgpmrL2wLz6yocC"
+          },
+          "encoding": {
+            "type": "string",
+            "description": "地址编码格式（仅适用于与比特币类似的链）。",
+            "enum": [
+              "ENCODING_P2PKH",
+              "ENCODING_P2SH_P2WPKH",
+              "ENCODING_BECH32",
+              "ENCODING_P2PKH_UNCOMPRESSED",
+              "ENCODING_P2SH_P2WSH_P2MS",
+              "ENCODING_P2SH_P2SH_P2MS",
+              "ENCODING_P2TR",
+              "ENCODING_ADA_BYRON",
+              "ENCODING_ADA_SHELLEY",
+              "ENCODING_DEFAULT"
+            ],
+            "example": "ENCODING_P2PKH"
+          }
+        }
+      },
+      "CreateAddressesResponse": {
+        "type": "object",
+        "description": "请求成功时返回的数据。",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "生成的地址对象列表。",
+            "items": {
+              "type": "object",
+              "required": ["address", "chain_id"],
+              "properties": {
+                "address": {
+                  "type": "string",
+                  "description": "钱包地址。",
+                  "example": "0x1000000000000000000000000000000000000000"
+                },
+                "chain_id": {
+                  "type": "string",
+                  "description": "链 ID。",
+                  "example": "ETH"
+                },
+                "memo": {
+                  "type": "string",
+                  "description": "地址备注/标签（如适用）。",
+                  "example": "82340924"
+                },
+                "path": {
+                  "type": "string",
+                  "description": "地址的派生路径（仅适用于 MPC 钱包）。",
+                  "example": "m/44/60/20/0"
+                },
+                "encoding": {
+                  "type": "string",
+                  "description": "地址编码格式（仅适用于与比特币类似的链）。",
+                  "enum": [
+                    "ENCODING_P2PKH",
+                    "ENCODING_P2SH_P2WPKH",
+                    "ENCODING_BECH32",
+                    "ENCODING_P2PKH_UNCOMPRESSED",
+                    "ENCODING_P2SH_P2WSH_P2MS",
+                    "ENCODING_P2SH_P2SH_P2MS",
+                    "ENCODING_P2TR",
+                    "ENCODING_ADA_BYRON",
+                    "ENCODING_ADA_SHELLEY",
+                    "ENCODING_DEFAULT"
+                  ],
+                  "example": "ENCODING_P2PKH"
+                },
+                "pubkey": {
+                  "type": "string",
+                  "description": "地址的公钥（仅适用于 MPC 钱包）。",
+                  "example": "tpubl4EqF1Ex3U4NpGi/0nWzA7Z7E5tPS7QW9Fwa8EsN9eJkpwAQCpJQ2-pro1Bidz1QnTSBounJ3AzFz0PB2A9sFy7YTeN2Qz4A9eYF7HLEH"
+                },
+                "x_only_pubkey": {
+                  "type": "string",
+                  "description": "32 字节 x-only 公钥（十六进制，针对 Taproot）。",
+                  "example": "9b451e62f24e0ce2ddd64e0a6b0f7900003b59a0f164af7235c21fc47a281945"
+                },
+                "root_pubkey": {
+                  "type": "string",
+                  "description": "该地址的根公钥（仅适用于 MPC 钱包）。",
+                  "example": "xpub6cjm9MfAbaPq6sRLVP5GiJvQME90ysuuqE27f9S0wiqz2FSWQC1kTXjqwo-EXgL2v7W96QXjQWgN9hKRrr1UEKEndwzrHwcP2uMmrLzG7e"
+                },
+                "taproot_script_tree_hash": {
+                  "type": "string",
+                  "description": "新地址对应的 Taproot 脚本树哈希（用于 Tweaked Taproot 信息）。",
+                  "example": "0x138df60fc5b336455553c776c25924ea70bc74b1b27aa46e4b-d9f464d19f5f0"
+                },
+                "taproot_internal_address": {
+                  "type": "string",
+                  "description": "Tweaked 前的 Taproot 内部地址（原始地址）。",
+                  "example": "3JWy6ta57t9Y7y1UfVPgpmrL2wLz6yocC"
+                }
+              }
+            }
+          }
+        }
+      },
+      "TransactionResponse": {
+        "type": "object",
+        "required": ["transaction_id", "wallet_id", "chain_id", "status", "created_timestamp"],
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "description": "交易 ID。",
+            "example": "aff0e1cb-15b2-4e1f-9b9d-a9133715986f"
+          },
+          "wallet_id": {
+            "type": "string",
+            "description": "钱包 ID, 对于充值交易，此属性表示交易目标的钱包 ID。对于其他类型的交易，此属性表示交易源的钱包 ID。"
+          },
+          "chain_id": {
+            "type": "string",
+            "description": "链 ID。",
+            "example": "ETH"
+          },
+          "status": {
+            "type": "string",
+            "description": "交易状态，详细信息可查看 [交易状态说明](/pages/status)。",
+            "enum": [
+              "Submitted", "PendingScreening", "PendingAuthorization", "PendingSignature", "Broadcasting", "Confirming", "Completed", "Failed", "Rejected", "Pending"
+            ]
+          },
+          "source": {
+            "type": "object",
+            "description": "发送方详情",
+            "properties": {}
+          },
+          "asset_id": {
+            "type": "string",
+            "description": "交易涉及的资产 ID。",
+            "example": "USDT"
+          },
+          "amount": {
+            "type": "string",
+            "description": "交易金额。",
+            "example": "0.12345"
+          },
+          "fee": {
+            "type": "string",
+            "description": "交易费用。",
+            "example": "0.001"
+          },
+          "memo": {
+            "type": "string",
+            "description": "交易备注。",
+            "example": "Invoice #12345"
+          },
+          "type": {
+            "type": "string",
+            "description": "交易类型。例如 Transfer、Deposit、Withdraw、Fee 等。",
+            "example": "Transfer"
+          },
+          "direction": {
+            "type": "string",
+            "description": "交易方向。可选值：Incoming、Outgoing。",
+            "example": "Outgoing"
+          },
+          "confirmations": {
+            "type": "integer",
+            "description": "确认数。",
+            "example": 12
+          },
+          "required_confirmations": {
+            "type": "integer",
+            "description": "所需确认数。",
+            "example": 20
+          },
+          "block_hash": {
+            "type": "string",
+            "description": "区块哈希。",
+            "example": "0xabc123..."
+          },
+          "block_height": {
+            "type": "integer",
+            "description": "区块高度。",
+            "example": 12345678
+          },
+          "tx_hash": {
+            "type": "string",
+            "description": "交易哈希。",
+            "example": "0xf2a1..."
+          },
+          "from_address": {
+            "type": "string",
+            "description": "交易来源地址。",
+            "example": "0x111..."
+          },
+          "to_address": {
+            "type": "string",
+            "description": "交易目标地址。",
+            "example": "0x222..."
+          },
+          "created_timestamp": {
+            "type": "integer",
+            "description": "交易创建时间戳（毫秒）。",
+            "example": 1718587017026
+          },
+          "updated_timestamp": {
+            "type": "integer",
+            "description": "交易最后更新时间戳（毫秒）。",
+            "example": 1718589020000
+          }
+        }
+      },
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "description": "Webhook 事件的类型id"
+          },
+          "url": {
+            "type": "string",
+            "description": "Webhook 事件的 URL。",
+            "example": "https://openapi.nusd.me/webhooks/real"
+          },
+          "created_timestamp": {
+            "type": "integer",
+            "description": "事件发生的时间戳",
+            "example": 1718589000000
+          },
+          "data": {
+            "type": "object",
+            "description": "事件数据",
+            "properties": {
+              "data_type": {
+                "type": "string",
+                "description": "Webhook 事件的数据类型。暂时只需关注 **Transaction**类型"
+              },
+              "type": {
+                "type": "string",
+                "description": "Webhook 事件的类型，目前只需关注 **Deposit**"
+              },
+              "status": {
+                "type": "string",
+                "description": "Webhook 事件对应的交易状态，为 **Completed** 时，充值成功到账",
+                "enum": [
+                  "Submitted", "PendingScreening", "PendingAuthorization", "PendingSignature", "Broadcasting", "Confirming", "Completed", "Failed", "Rejected", "Pending"
+                ]
+              },
+              "initiator_type": {
+                "type": "string",
+                "description": "Webhook 事件的触发方式，忽略"
+              },
+              "transaction_id": {
+                "type": "string",
+                "description": "Webhook 事件对应的交易 ID。",
+                "example": "aff0e1cb-15b2-4e1f-9b9d-a9133715986f"
+              },
+              "wallet_id": {
+                "type": "string",
+                "description": "Webhook 事件对应的钱包 ID。",
+                "example": "wallet_id"
+              },
+              "source": {
+                "type": "object",
+                "description": "充值来源",
+                "properties": {
+                  "source_type": {
+                    "type": "string",
+                    "description": "充值来源类型，用户充值时，需要关注 **DepositFromAddress**",
+                    "enum": [
+                      "Asset", "Web3", "Org-Controlled", "User-Controlled", "Safe{Wallet}", "Main", "Sub", "DepositFromAddress", "DepositFromWallet", "DepositFromLoop"
+                    ]
+                  },
+                  "wallet_id": {
+                    "type": "string",
+                    "description": "充值来源钱包 ID，忽略"
+                  },
+                  "wallet_type": {
+                    "type": "string",
+                    "description": "钱包类型，忽略"
+                  },
+                  "addresses": {
+                    "type": "array<string>",
+                    "description": "充值来源地址列表，一般只有一个数据 (用户自己的地址，忽略)"
+                  },
+                  "included_utxos": {
+                    "type": "object",
+                    "description": "忽略"
+                  },
+                  "excluded_utxos": {
+                    "type": "object",
+                    "description": "忽略"
+                  }
+                }
+              },
+              "destination": {
+                "type": "object",
+                "description": "充值目标",
+                "properties": {
+                  "destination_type": {
+                    "type": "string",
+                    "description": "充值目标类型，用户充值时，需要关注 **DepositToAddress**",
+                    "enum": [
+                      "Address", "CustodialWallet", "ExchangeWallet", "EVM_Contract", "SOL_Contract", "COSMOS_Contract", "EVM_EIP_191_Signature", "EVM_EIP_712_Signature", "BTC_BIP_137_Signature", "BTC_BIP_322_Signature", "COSMOS_ADR_36_Signature", "Raw_Message_Signature", "DepositToAddress", "DepositToWallet"
+                    ]
+                  },
+                  "wallet_id": {
+                    "type": "string",
+                    "description": "充值目标钱包 ID，忽略"
+                  },
+                  "wallet_type": {
+                    "type": "string",
+                    "description": "目标钱包类型，忽略"
+                  },
+                  "wallet_subtype": {
+                    "type": "string",
+                    "description": "目标钱包子类型，忽略"
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "充值目标地址 (由api生成的地址)"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "description": "用户充值的数量，单位为 data.token_id"
+                  },
+                  "memo": {
+                    "type": "string",
+                    "description": "忽略"
+                  }
+                }
+              },
+              "request_id": {
+                "type": "string",
+                "description": "用于跟踪交易请求的请求 ID。"
+              },
+              "created_timestamp": {
+                "type": "integer",
+                "description": "事件发生的时间戳（毫秒）。",
+                "example": 1701396866000
+              },
+              "updated_timestamp": {
+                "type": "integer",
+                "description": "事件更新的时间戳（毫秒）。",
+                "example": 1701396866000
+              },
+              "sub_status": {
+                "type": "string",
+                "description": "Webhook 事件的子状态，忽略"
+              },
+              "chain_id": {
+                "type": "string",
+                "description": "链 ID，即区块链的唯一标识符。",
+                "example": "ETH"
+              },
+              "token_id": {
+                "type": "string",
+                "description": "代币 ID，即代币的唯一标识符。",
+                "example": "ETH_USDT"
+              },
+              "asset_id": {
+                "type": "string",
+                "description": "（此概念仅适用于交易所钱包）资产 ID。资产 ID 是关联交易所账户中持有资产的唯一标识符。",
+                "example": "USDT"
+              },
+              "result": {
+                "type": "object",
+                "description": "忽略"
+              },
+              "fee": {
+                "type": "object",
+                "description": "忽略"
+              },
+              "initiator": {
+                "type": "string",
+                "description": "忽略"
+              },
+              "confirmed_num": {
+                "type": "integer",
+                "description": "已确认次数。",
+                "example": 10
+              },
+              "confirming_threshold": {
+                "type": "integer",
+                "description": "交易最低确认次数",
+                "example": 12
+              },
+              "transaction_hash": {
+                "type": "string",
+                "description": "交易哈希"
+              },
+              "block_info": {
+                "type": "object",
+                "description": "交易区块信息，忽略"
+              },
+              "raw_tx_info": {
+                "type": "object",
+                "description": "原始交易信息，忽略"
+              },
+              "replacement": {
+                "type": "object",
+                "description": "忽略"
+              },
+              "category": {
+                "type": "string",
+                "description": "交易类别，忽略"
+              },
+              "description": {
+                "type": "string",
+                "description": "交易描述，忽略"
+              }
+            }
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "pagination_before": {
+            "type": "string",
+            "description": "上一页游标（用于获取更早的事件）。为空时表示已经到达起点。",
+            "example": "eyJpZCI6IjEyMyJ9"
+          },
+          "pagination_after": {
+            "type": "string",
+            "description": "下一页游标（用于获取更新的事件）。为空时表示已经到达终点。",
+            "example": "eyJpZCI6IjQ1NiJ9"
+          },
+          "pagination_total_count": {
+            "type": "integer",
+            "description": "匹配当前查询条件的总记录数，可能会因为过滤参数（例如 before/after/limit）而变化。",
+            "example": 10000
+          }
+        }
+      }
     }
-  ],
+  },
   "paths": {
-    "/api/mpc/sub_wallet/create/address": {
+    "/v2/wallets/{wallet_id}/addresses": {
       "post": {
-        "summary": "创建地址",
-        "description": "为指定的币种创建地址",
+        "tags": ["Addresses"],
+        "operationId": "createAddressesInWallet",
+        "summary": "在钱包内生成地址",
+        "description": "在指定钱包内一次生成一个或多个地址。支持生成 Taproot（含 Tweaked Taproot）等格式；MPC 钱包会返回派生路径、公钥等附加信息。",
+        "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
+        "parameters": [
+          {
+            "name": "wallet_id",
+            "in": "path",
+            "required": true,
+            "description": "钱包 ID。",
+            "schema": { "type": "string" }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "sub_wallet_id": {
-                    "type": "integer",
-                    "description": "钱包id",
-                    "example": 12345
-                  },
-                  "symbol": {
-                    "type": "string",
-                    "description": "币种唯一标识，支持以下类型：\n- USDTERC20 : Ethereum\n- TUSDT : TRON\n- USDTBEP20 : BNB Smart Chain\n- USDTBASE : Base\n- USDTSOL : Solana\n- USDTARB : Arbitrum",
-                    "enum": [
-                      "USDTERC20",
-                      "TUSDT",
-                      "USDTBEP20",
-                      "USDTBASE",
-                      "USDTSOL",
-                      "USDTARB"
-                    ]
-                  }
-                },
-                "required": ["sub_wallet_id", "symbol"]
-              }
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateAddressesRequest" }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "成功创建地址",
+            "description": "请求成功，返回生成的地址列表及相关信息。",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreateAddressesResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/transactions/{transaction_id}": {
+      "get": {
+        "tags": ["Transactions"],
+        "operationId": "getTransactionInformation",
+        "summary": "获取交易信息",
+        "description": "获取指定交易的详细信息，例如交易状态、来源地址、目标地址、金额和手续费等。",
+        "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
+        "parameters": [
+          {
+            "name": "transaction_id",
+            "in": "path",
+            "required": true,
+            "description": "交易 ID。",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回交易详情。",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TransactionResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "请求错误。"
+          },
+          "401": {
+            "description": "未授权。"
+          },
+          "403": {
+            "description": "禁止访问。"
+          },
+          "404": {
+            "description": "未找到指定的交易。"
+          },
+          "500": {
+            "description": "服务器错误。"
+          }
+        }
+      }
+    },
+    "/v2/webhooks/endpoints/{endpoint_id}/events": {
+      "get": {
+        "tags": ["Webhooks"],
+        "operationId": "listWebhookEvents",
+        "summary": "列出所有 Webhook 事件",
+        "description": "检索指定 webhook 在最近 30 天内发生的所有事件。",
+        "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
+        "parameters": [
+          {
+            "name": "endpoint_id",
+            "in": "path",
+            "required": true,
+            "description": "Webhook 的唯一 ID",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "事件状态过滤器",
+            "schema": {
+              "type": "string",
+              "enum": ["Success", "Failed", "Pending"],
+              "example": "Success"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Webhook 事件类型过滤器。暂时只需关注 **wallets.transaction.succeeded**，该type为充值成功",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "返回的最大记录数。大多数接口默认为 50，最大可到 500。",
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "example": 100
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "description": "游标，表示返回该游标之前的事件。为空表示到达起点。",
+            "schema": {
+              "type": "string",
+              "example": "eyJpZCI6IjEyMyJ9"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "description": "游标，表示返回该游标之后的事件。为空表示到达末尾。",
+            "schema": {
+              "type": "string",
+              "example": "eyJpZCI6IjQ1NiJ9"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回事件列表。",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "address": {
-                      "type": "string",
-                      "description": "创建的地址"
+                    "data": {
+                      "type": "array",
+                      "description": "Webhook 事件列表。",
+                      "items": { "$ref": "#/components/schemas/WebhookEvent" }
                     },
-                    "addr_type": {
-                      "type": "integer",
-                      "description": "地址类型，1：用户地址，2：系统地址"
-                    },
-                    "memo": {
-                      "type": "string",
-                      "description": "暂时忽略"
-                    },
-                    "id": {
-                      "type": "integer",
-                      "description": "创建的钱包id"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/mpc/billing/deposit_list": {
-      "get": {
-        "parameters": [
-          {
-            "name": "ids",
-            "in": "query",
-            "description": "多个id，使用英文逗号分隔，例：123,345",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "成功返回收款记录列表",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer",
-                        "description": "收款id"
-                      },
-                      "sub_wallet_id": {
-                        "type": "integer",
-                        "description": "钱包id"
-                      },
-                      "symbol": {
-                        "type": "string",
-                        "description": "币种唯一标识，转账时使用，例：USDTERC20"
-                      },
-                      "created_at": {
-                        "type": "long",
-                        "description": "创建时间时间戳"
-                      },
-                      "updated_at": {
-                        "type": "long",
-                        "description": "修改时间时间戳"
-                      },
-                      "amount": {
-                        "type": "string",
-                        "description": "收款金额"
-                      },
-                      "address_from": {
-                        "type": "string",
-                        "description": "出币地址"
-                      },
-                      "address_to": {
-                        "type": "string",
-                        "description": "到账地址"
-                      },
-                      "memo": {
-                        "type": "string",
-                        "description": "到账地址memo，暂时忽略"
-                      },
-                      "txid": {
-                        "type": "string",
-                        "description": "交易hash"
-                      },
-                      "confirmations": {
-                        "type": "integer",
-                        "description": "区块确认数，例：10"
-                      },
-                      "status": {
-                        "type": "integer",
-                        "description": "收款状态包含以下几种：\n- 1000-未确认 \n- 1010-待KYT验证 \n- 1020-待KYT人工处理 \n- 1030-充值KYT熔断（待人工处理）\n- 1800-待溯源（保证交易安全）\n- 1900-待验证溯源（溯源完成，等待系统验证）\n- 2000-已完成 \n- 3000-异常 \n- 4000-资金退出",
-                        "enum": [1000, 1010, 1020, 1030, 1800, 1900, 2000, 3000, 4000]
-                      },
-                      "deposit_type": {
-                        "type": "integer",
-                        "description": "充值类型，1:普通币种充值，2: NFT充值",
-                        "enum": [1, 2]
-                      },
-                      "token_id": {
-                        "type": "string",
-                        "description": "NFT充值的tokenId，注：deposit_type=2时，该字段不为空"
-                      },
-                      "base_symbol": {
-                        "type": "string",
-                        "description": "转账币种唯一标识，例：ETH"
-                      },
-                      "contract_address": {
-                        "type": "string",
-                        "description": "转账币种合约地址"
-                      },
-                      "tx_height": {
-                        "type": "long",
-                        "description": "交易完成的区块高度"
-                      },
-                      "refund_amount": {
-                        "type": "string",
-                        "description": "资金退回金额"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/mpc/billing/sync_deposit_list": {
-      "get": {
-        "parameters": [
-          {
-            "name": "max_id",
-            "in": "query",
-            "description": "收款记录起始id，例100，系统将返回101后的所有交易信息，传0会返回所有数据",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "成功返回收款记录列表",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer",
-                        "description": "收款id"
-                      },
-                      "sub_wallet_id": {
-                        "type": "integer",
-                        "description": "钱包id"
-                      },
-                      "symbol": {
-                        "type": "string",
-                        "description": "币种唯一标识，转账时使用，例：USDTERC20"
-                      },
-                      "created_at": {
-                        "type": "long",
-                        "description": "创建时间时间戳"
-                      },
-                      "updated_at": {
-                        "type": "long",
-                        "description": "修改时间时间戳"
-                      },
-                      "amount": {
-                        "type": "string",
-                        "description": "收款金额"
-                      },
-                      "address_from": {
-                        "type": "string",
-                        "description": "出币地址"
-                      },
-                      "address_to": {
-                        "type": "string",
-                        "description": "到账地址"
-                      },
-                      "memo": {
-                        "type": "string",
-                        "description": "到账地址memo，暂时忽略"
-                      },
-                      "txid": {
-                        "type": "string",
-                        "description": "交易hash"
-                      },
-                      "confirmations": {
-                        "type": "integer",
-                        "description": "区块确认数，例：10"
-                      },
-                      "status": {
-                        "type": "integer",
-                        "description": "收款状态包含以下几种：\n- 1000-未确认 \n- 1010-待KYT验证 \n- 1020-待KYT人工处理 \n- 1030-充值KYT熔断（待人工处理）\n- 1800-待溯源（保证交易安全）\n- 1900-待验证溯源（溯源完成，等待系统验证）\n- 2000-已完成 \n- 3000-异常 \n- 4000-资金退出",
-                        "enum": [1000, 1010, 1020, 1030, 1800, 1900, 2000, 3000, 4000]
-                      },
-                      "deposit_type": {
-                        "type": "integer",
-                        "description": "充值类型，1:普通币种充值，2: NFT充值",
-                        "enum": [1, 2]
-                      },
-                      "token_id": {
-                        "type": "string",
-                        "description": "NFT充值的tokenId，注：deposit_type=2时，该字段不为空"
-                      },
-                      "base_symbol": {
-                        "type": "string",
-                        "description": "转账币种唯一标识，例：ETH"
-                      },
-                      "contract_address": {
-                        "type": "string",
-                        "description": "转账币种合约地址"
-                      },
-                      "tx_height": {
-                        "type": "long",
-                        "description": "交易完成的区块高度"
-                      },
-                      "refund_amount": {
-                        "type": "string",
-                        "description": "资金退回金额"
-                      }
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
