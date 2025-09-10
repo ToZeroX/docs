@@ -1,0 +1,139 @@
+---
+title: 'Webhook介绍'
+---
+
+## Webhook说明
+
+| 机制           | 描述    | 触发条件 | 响应                                                                                    |
+|:-----------------|:---------|:----------|:------------------------------------------------------------------------------------------|
+| Webhook         | 用作事件的实时通知，例如交易状态更新。  | 当某些事件发生时触发，例如交易状态或 TSS 请求状态更改，基于您订阅的事件类型。       | 以成功状态码（<code>200</code> 或 <code>201</code>）响应。                                                    |
+
+## 处理 webhook 事件
+
+1. 创建一个 webhook
+    - 选择服务器环境。
+    - 定义Endpoint URL。
+2. 在服务器端实现处理逻辑。
+    - 解析 API 请求。
+    - 验证签名。
+    - 响应 API 请求。
+    - 添加其他处理逻辑（如果适用）。
+3. 将webhook地址提供给我们，由我们来进行配置(暂时)
+
+## Webhook 事件
+
+当您的 Webhook Endpoint 收到 Webhook 事件时，它应该响应状态码 200 或 201 以指示事件已成功接收和处理。一旦发送此响应，WaaS 服务将停止重试发送事件，事件状态将变为**已送达**。
+
+默认情况下，每个 Webhook 事件的超时时间为 2 秒。如果 Webhook Endpoint 没有响应或响应状态码不是 200 或 201，WaaS 服务将继续重试发送事件。如果重试次数达到 10 次，WaaS 服务将停止发送事件，事件状态将变为**发送失败**。
+
+NUSD 不保证事件将按生成顺序交付。例如，创建转账将生成以下事件：
+
+- <code>wallets.transaction.created</code>
+- <code>wallets.transaction.updated</code>
+- <code>wallets.transaction.succeeded</code>
+
+**您的 Endpoint 不应假设事件将按此顺序到达。**
+
+## Nodejs 实现示例
+
+``` javascript
+const express = require("express");
+
+// Express setup
+const app = express();
+app.use(express.json({
+    verify: (req, res, buf) => {
+        req.rawBody = buf.toString();
+    }
+}));
+
+// Webhook endpoint
+app.post("/api/webhook", (req, res) => {
+    const event = req.rawBody;
+    console.log(event);
+
+    res.sendStatus(201);    // res.send('ok');
+});
+
+// Server startup
+const PORT = 8000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+```
+
+## 字段说明 (webhook收到的内容)
+
+``` json
+{
+	"event_id": "48bf7cdc-7dd9-4d61-aa61-496003a4787c",
+	"url": "https://api.nusd.me/webhooks/real",
+	"created_timestamp": 1757407060503,
+	"type": "wallets.transaction.created", // 重点关注 type: "wallets.transaction.succeeded", 该事件为充值到账
+	"data": {
+		"transaction_id": "157d3c84-294b-4ca1-8ca7-f0bbb3b98787",
+		"wallet_id": "5c8e4ee0-e701-43b8-9724-7815d7c12643",
+		"type": "Deposit", // Deposit 为充值
+		"status": "Confirming", // status为 "Completed"时，充值到账
+		"initiator_type": "External",
+		"source": { // 充值来源
+			"source_type": "DepositFromAddress",
+			"addresses": ["0xf3f42f3d87ac8687b845146ec38aa9672d9669ab"],
+			"wallet_id": null,
+			"wallet_type": null,
+			"wallet_subtype": null
+		},
+		"destination": { // 充值目标
+			"destination_type": "DepositToAddress",
+			"amount": "0.001",
+			"address": "0x25246af7149a20b2d742b0796431df070eec7048",
+			"wallet_id": "5c8e4ee0-e701-43b8-9724-7815d7c12643",
+			"wallet_type": "MPC",
+			"wallet_subtype": "Org-Controlled",
+			"memo": null,
+			"tx_info": null
+		},
+		"created_timestamp": 1757407059769,
+		"updated_timestamp": 1757407059770,
+		"cobo_id": "20250909163739000102570000001947",
+		"request_id": null,
+		"sub_status": null,
+		"failed_reason": null,
+		"chain_id": "TBSC_BNB",
+		"token_id": "TBSC_BNB",
+		"asset_id": null,
+		"result": null,
+		"fee": null,
+		"initiator": null,
+		"confirmed_num": 1,
+		"confirming_threshold": 15,
+		"transaction_hash": "0x77e1a72d410f279d589b185b4b74d4cc7e030cc67d42c7f0f0d3a96d84c08664",
+		"block_info": {
+			"block_number": 64752220,
+			"block_timestamp": 1757407051000,
+			"block_hash": "0xc4dc0d85b266012de8253894ca3a1d0afc06f2814704c1a2dbdbd3006ab2cfdd"
+		},
+		"raw_tx_info": {
+			"used_nonce": 1004,
+			"selected_utxos": [],
+			"raw_tx": null,
+			"unsigned_raw_tx": null,
+			"utxo_change": null
+		},
+		"replacement": null,
+		"fueling_info": null,
+		"category": [],
+		"cobo_category": [],
+		"description": "",
+		"is_loop": false,
+		"extra": null,
+		"timeline": [{
+			"status": "Confirming",
+			"finished": false,
+			"finished_timestamp": 1757407059000,
+			"sub_status": null
+		}],
+		"data_type": "Transaction"
+	}
+}
+```

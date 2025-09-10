@@ -32,7 +32,7 @@
         "properties": {
           "chain_id": {
             "type": "string",
-            "description": "链 ID，区块链的唯一标识。\n 可用选项 \n - ETH: Ethereum Chain \n - BASE_ETH: Base Chain"
+            "description": "链 ID，区块链的唯一标识。\n 可用选项 \n - ETH: EVM钱包 \n - TRON: TRON钱包 \n - SOL: Solana钱包"
           },
           "count": {
             "type": "integer",
@@ -266,7 +266,7 @@
           "url": {
             "type": "string",
             "description": "Webhook 事件的 URL。",
-            "example": "https://openapi.nusd.me/webhooks/real"
+            "example": "https://api.nusd.me/webhooks/real"
           },
           "created_timestamp": {
             "type": "integer",
@@ -326,16 +326,21 @@
                     "description": "钱包类型，忽略"
                   },
                   "addresses": {
-                    "type": "array<string>",
-                    "description": "充值来源地址列表，一般只有一个数据 (用户自己的地址，忽略)"
+                    "type": "array",
+                    "description": "充值来源地址列表，一般只有一个数据 (用户自己的地址，忽略)",
+                    "items": {
+                      "type": "string"
+                    }
                   },
                   "included_utxos": {
                     "type": "object",
-                    "description": "忽略"
+                    "description": "忽略",
+                    "additionalProperties": true
                   },
                   "excluded_utxos": {
                     "type": "object",
-                    "description": "忽略"
+                    "description": "忽略",
+                    "additionalProperties": true
                   }
                 }
               },
@@ -411,11 +416,13 @@
               },
               "result": {
                 "type": "object",
-                "description": "忽略"
+                "description": "忽略",
+                "additionalProperties": true
               },
               "fee": {
                 "type": "object",
-                "description": "忽略"
+                "description": "忽略",
+                "additionalProperties": true
               },
               "initiator": {
                 "type": "string",
@@ -437,15 +444,207 @@
               },
               "block_info": {
                 "type": "object",
-                "description": "交易区块信息，忽略"
+                "description": "交易区块信息，忽略",
+                "additionalProperties": true
               },
               "raw_tx_info": {
                 "type": "object",
-                "description": "原始交易信息，忽略"
+                "description": "原始交易信息，忽略",
+                "additionalProperties": true
               },
               "replacement": {
                 "type": "object",
+                "description": "忽略",
+                "additionalProperties": true
+              },
+              "category": {
+                "type": "string",
+                "description": "交易类别，忽略"
+              },
+              "description": {
+                "type": "string",
+                "description": "交易描述，忽略"
+              }
+            }
+          }
+        }
+      },
+      "TransactionsListRes": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "事件数据",
+            "properties": {
+              "transaction_id": {
+                "type": "string",
+                "description": "交易 ID。",
+                "example": "aff0e1cb-15b2-4e1f-9b9d-a9133715986f"
+              },
+              "wallet_id": {
+                "type": "string",
+                "description": "钱包 ID。"
+              },
+              "status": {
+                "type": "string",
+                "description": "交易状态，为 **Completed** 时，充值成功到账",
+                "enum": [
+                  "Submitted", "PendingScreening", "PendingAuthorization", "PendingSignature", "Broadcasting", "Confirming", "Completed", "Failed", "Rejected", "Pending"
+                ]
+              },
+              "type": {
+                "type": "string",
+                "description": "事件类型， **Deposit** 为充值",
+                "enum": [
+                  "Deposit", "Withdrawal", "ContractCall", "MessageSign", "ExternalSafeTx", "Stake", "Unstake"
+                ]
+              },
+              "source": {
+                "type": "object",
+                "description": "充值来源",
+                "properties": {
+                  "source_type": {
+                    "type": "string",
+                    "description": "充值来源类型，用户充值时，需要关注 **DepositFromAddress**",
+                    "enum": [
+                      "Asset", "Web3", "Org-Controlled", "User-Controlled", "Safe{Wallet}", "Main", "Sub", "DepositFromAddress", "DepositFromWallet", "DepositFromLoop"
+                    ]
+                  },
+                  "wallet_id": {
+                    "type": "string",
+                    "description": "充值来源钱包 ID，忽略"
+                  },
+                  "wallet_type": {
+                    "type": "string",
+                    "description": "钱包类型，忽略"
+                  },
+                  "addresses": {
+                    "type": "array",
+                    "description": "充值来源地址列表，一般只有一个数据 (用户自己的地址，忽略)",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "included_utxos": {
+                    "type": "object",
+                    "description": "忽略",
+                    "additionalProperties": true
+                  },
+                  "excluded_utxos": {
+                    "type": "object",
+                    "description": "忽略",
+                    "additionalProperties": true
+                  }
+                }
+              },
+              "destination": {
+                "type": "object",
+                "description": "充值目标",
+                "properties": {
+                  "destination_type": {
+                    "type": "string",
+                    "description": "充值目标类型，用户充值时，需要关注 **DepositToAddress**",
+                    "enum": [
+                      "Address", "CustodialWallet", "ExchangeWallet", "EVM_Contract", "SOL_Contract", "COSMOS_Contract", "EVM_EIP_191_Signature", "EVM_EIP_712_Signature", "BTC_BIP_137_Signature", "BTC_BIP_322_Signature", "COSMOS_ADR_36_Signature", "Raw_Message_Signature", "DepositToAddress", "DepositToWallet"
+                    ]
+                  },
+                  "wallet_id": {
+                    "type": "string",
+                    "description": "充值目标钱包 ID，忽略"
+                  },
+                  "wallet_type": {
+                    "type": "string",
+                    "description": "目标钱包类型，忽略"
+                  },
+                  "wallet_subtype": {
+                    "type": "string",
+                    "description": "目标钱包子类型，忽略"
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "充值目标地址 (由api生成的地址)"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "description": "用户充值的数量，单位为 data.token_id"
+                  },
+                  "memo": {
+                    "type": "string",
+                    "description": "忽略"
+                  }
+                }
+              },
+              "request_id": {
+                "type": "string",
+                "description": "用于跟踪交易请求的请求 ID。"
+              },
+              "created_timestamp": {
+                "type": "integer",
+                "description": "事件发生的时间戳（毫秒）。",
+                "example": 1701396866000
+              },
+              "updated_timestamp": {
+                "type": "integer",
+                "description": "事件更新的时间戳（毫秒）。",
+                "example": 1701396866000
+              },
+              "chain_id": {
+                "type": "string",
+                "description": "链 ID，即区块链的唯一标识符。",
+                "example": "ETH"
+              },
+              "token_id": {
+                "type": "string",
+                "description": "代币 ID，即代币的唯一标识符。",
+                "example": "ETH_USDT"
+              },
+              "asset_id": {
+                "type": "string",
+                "description": "（此概念仅适用于交易所钱包）资产 ID。资产 ID 是关联交易所账户中持有资产的唯一标识符。",
+                "example": "USDT"
+              },
+              "result": {
+                "type": "object",
+                "description": "忽略",
+                "additionalProperties": true
+              },
+              "fee": {
+                "type": "object",
+                "description": "忽略",
+                "additionalProperties": true
+              },
+              "initiator": {
+                "type": "string",
                 "description": "忽略"
+              },
+              "confirmed_num": {
+                "type": "integer",
+                "description": "已确认次数。",
+                "example": 10
+              },
+              "confirming_threshold": {
+                "type": "integer",
+                "description": "交易最低确认次数",
+                "example": 12
+              },
+              "transaction_hash": {
+                "type": "string",
+                "description": "交易哈希"
+              },
+              "block_info": {
+                "type": "object",
+                "description": "交易区块信息，忽略",
+                "additionalProperties": true
+              },
+              "raw_tx_info": {
+                "type": "object",
+                "description": "原始交易信息，忽略",
+                "additionalProperties": true
+              },
+              "replacement": {
+                "type": "object",
+                "description": "忽略",
+                "additionalProperties": true
               },
               "category": {
                 "type": "string",
@@ -640,6 +839,131 @@
                       "type": "array",
                       "description": "Webhook 事件列表。",
                       "items": { "$ref": "#/components/schemas/WebhookEvent" }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/transactions": {
+      "get": {
+        "summary": "此操作将检索您组织下的所有交易。",
+        "description": "您可以按请求 ID、交易 ID、交易哈希、类型、状态和时间戳筛选结果。您还可以对查询结果进行分页和排序。",
+        "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "query",
+            "required": false,
+            "description": "用于跟踪交易请求的请求 ID。该请求 ID 由您提供，并且在您的组织内必须是唯一的。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transaction_ids",
+            "in": "query",
+            "required": false,
+            "description": "交易 ID 列表，以 **,** 分隔。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transaction_hashes",
+            "in": "query",
+            "required": false,
+            "description": "交易 hash 列表，以 **,** 分隔。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "required": false,
+            "description": "交易类型列表，以 **,**  分隔。 目前只需关注 **Deposit**",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "交易状态列表，以 **,**  分隔。 目前只需关注 **Completed**",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chain_ids",
+            "in": "query",
+            "required": false,
+            "description": "以 **,** 分隔的链 ID 列表。链 ID 是区块链的唯一标识符。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token_ids",
+            "in": "query",
+            "required": false,
+            "description": "以 **,** 分隔的代币 ID 列表。代币 ID 是代币的唯一标识符。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "返回的最大记录数。默认为 10，最大值为 50",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "example": 10
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "description": "游标，表示返回该游标之前的事件。为空表示到达起点。",
+            "schema": {
+              "type": "string",
+              "example": "eyJpZCI6IjEyMyJ9"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "description": "游标，表示返回该游标之后的事件。为空表示到达末尾。",
+            "schema": {
+              "type": "string",
+              "example": "eyJpZCI6IjQ1NiJ9"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回事件列表。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "description": "Webhook 事件列表。",
+                      "items": { "$ref": "#/components/schemas/TransactionsListRes" }
                     },
                     "pagination": {
                       "$ref": "#/components/schemas/Pagination"

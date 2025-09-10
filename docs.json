@@ -31,13 +31,14 @@
           {
             "group": "接口说明",
             "pages": [
-              "api-reference/endpoint/createAddress"
+              "api-reference/endpoint/createAddress",
+              "api-reference/endpoint/getTransactions"
             ]
           },
           {
             "group": "Webhook",
             "pages": [
-              "api-reference/endpoint/webhook-deposit"
+              "pages/webhook"
             ]
           },
           {
