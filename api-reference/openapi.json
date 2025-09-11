@@ -266,7 +266,7 @@
           "url": {
             "type": "string",
             "description": "Webhook 事件的 URL。",
-            "example": "https://api.nusd.me/webhooks/real"
+            "example": "https://apidev.nusd.me/webhooks/real"
           },
           "created_timestamp": {
             "type": "integer",
