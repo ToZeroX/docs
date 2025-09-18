@@ -32,7 +32,7 @@
         "properties": {
           "chain_id": {
             "type": "string",
-            "description": "链 ID，区块链的唯一标识。\n 可用选项 \n - ETH: EVM钱包 \n - TRON: TRON钱包 \n - SOL: Solana钱包"
+            "description": "链 ID，区块链的唯一标识。\n 可用选项 \n - ETH: EVM钱包 \n - TRON: TRON钱包"
           },
           "count": {
             "type": "integer",
@@ -962,7 +962,7 @@
                   "properties": {
                     "data": {
                       "type": "array",
-                      "description": "Webhook 事件列表。",
+                      "description": "交易列表",
                       "items": { "$ref": "#/components/schemas/TransactionsListRes" }
                     },
                     "pagination": {

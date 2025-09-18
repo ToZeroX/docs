@@ -1,0 +1,67 @@
+---
+title: '集成 H5 页面'
+---
+
+## 产品特点
+
+Checkout 界面展示（以移动端为例）
+
+<div style={{ display: 'flex', gap: '20px' }} className='media-col'>
+  <img src="/images/home.png" alt="" style={{ width: '240px' }} />
+  <img src="/images/pay.png" alt="" style={{ width: '240px' }} />
+</div>
+
+### 用户体验
+
+- **全终端适配**: 原生支持移动端、桌面端和平板设备，内置多语言切换(默认跟随浏览器语言)。
+- **支持黑白双色模式**: 默认跟随浏览器主题。
+- **多链多币种支持**: 覆盖 USDT、USDC 等主流稳定币，支持以太坊、Arbitrum、Base、Solana、BSC、Polygon 等主流区块链。
+- **一键支付**: 支持扫码支付和地址一键复制
+- **完整交易监控**: 提供交易哈希、地址信息等完整链上数据追踪。
+
+## 集成步骤
+
+通过url跳转到Checkout页面
+
+  <code>https://pay.nusd.me?address={payAddress}&chainType={chainType}&amount={payAmount}&coin=${payCoin}&callbackUrl=${callbackUrl}</code>
+
+  - payAddress: 收款地址
+  - chainType: 链类型
+    - TRC20: Tron链
+    - ERC20 或 空: EVM系
+  - payAmount: 充值金额
+  - payCoin: 充值币种
+  - callbackUrl: 回调地址,需要使用 <code>encodeURIComponent</code> 进行编码
+
+<Note>**payCoin**目前只支持USDT，可以不传</Note>
+
+示例url: <code>https://pay.nusd.me?address=0xfed5669d48c77f30f384d1615d98f490d37dd94c&chainType=ERC20&amount=10&callbackUrl=https%3A%2F%2Fnusd.global</code>
+
+## 交易状态
+
+### 1. 未检索到交易
+
+**条件**：用户在页面点击“检查状态”按钮，但系统未检测到任何与用户相关的充值交易记录。  
+**文案**：未检测到任何充值交易，请确认交易已发起或稍后再次尝试检查。  
+**说明**：此状态提示用户当前没有任何充值交易记录，可能是交易尚未广播到区块链网络，或输入信息有误，引导用户确认或稍后重试。
+
+<img src="/images/indexing.png" alt="" style={{ width: '320px' }} />
+
+### 2. 交易待确认
+
+**条件**：用户点击“检查状态”或系统后台自动检测到充值交易记录，提示框自动弹出，但交易确认的区块数尚未达到10个。  
+**文案**：您的充值交易正在确认中，当前确认区块数未达到10个。请耐心等待，预计数分钟内完成确认。  
+**说明**：此状态明确告知用户交易已被系统识别但尚未完全确认，强调10个区块的确认阈值，同时提供大致时间预期，减少用户焦虑。
+
+<img src="/images/confirming.png" alt="" style={{ width: '320px' }} />
+
+### 3. 交易确认成功
+
+**条件**：交易确认的区块数超过10个，系统判定交易已稳定到账。  
+**文案**：恭喜！您的充值交易已确认成功，资金已安全到账（确认区块数已超过10个）。  
+**说明**：此状态确认交易已达到10个区块的确认标准，强调资金安全性与到账完成，增强用户信任感。
+
+<img src="/images/completed.png" alt="" style={{ width: '320px' }} />
+
+### 注意事项
+若用户在充值过程中退出页面并重新进入，系统无法直接检索到之前的充值交易记录。为实时监控充值状态，建议通过webhook接口接收交易确认的推送通知，确保及时获取入账更新。

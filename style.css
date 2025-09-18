@@ -1,3 +1,14 @@
 #search-bar-entry, #assistant-entry, #ask-ai-code-block-button {
   display: none!important;
 }
+
+.mermaid {
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (max-width: 500px) {
+  .media-col {
+    flex-direction: column;
+  }
+}

@@ -23,9 +23,11 @@
             "group": "统一说明",
             "pages": [
               "index",
+              "pages/domains",
               "pages/request",
               "pages/encrypt",
-              "pages/status"
+              "pages/status",
+              "pages/chain"
             ]
           },
           {
@@ -33,6 +35,12 @@
             "pages": [
               "api-reference/endpoint/createAddress",
               "api-reference/endpoint/getTransactions"
+            ]
+          },
+          {
+            "group": "Checkout 集成",
+            "pages": [
+              "pages/checkout"
             ]
           },
           {
