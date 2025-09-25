@@ -713,7 +713,15 @@
                 "schema": { "$ref": "#/components/schemas/CreateAddressesResponse" }
               }
             }
-          }
+          },
+          "201": {
+            "description": "请求成功，返回生成的地址列表及相关信息。",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreateAddressesResponse" }
+              }
+            }
+          },
         }
       }
     },
@@ -954,6 +962,26 @@
         ],
         "responses": {
           "200": {
+            "description": "请求成功，返回事件列表。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "description": "交易列表",
+                      "items": { "$ref": "#/components/schemas/TransactionsListRes" }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
             "description": "请求成功，返回事件列表。",
             "content": {
               "application/json": {

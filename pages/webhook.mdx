@@ -8,6 +8,10 @@ title: 'Webhook介绍'
 |:-----------------|:---------|:----------|:------------------------------------------------------------------------------------------|
 | Webhook         | 用作事件的实时通知，例如交易状态更新。  | 当某些事件发生时触发，例如交易状态或 TSS 请求状态更改，基于您订阅的事件类型。       | 以成功状态码（<code>200</code> 或 <code>201</code>）响应。                                                    |
 
+<Note>
+  需要在webhook的处理中，判断一下事件中的wallet_id是否为您的wallet_id，如果不是，则忽略。
+</Note>
+
 ## 处理 webhook 事件
 
 1. 创建一个 webhook
@@ -19,6 +23,87 @@ title: 'Webhook介绍'
     - 响应 API 请求。
     - 添加其他处理逻辑（如果适用）。
 3. 将webhook地址提供给我们，由我们来进行配置(暂时)
+
+## 验证签名
+
+为了防止未经授权的访问，当您收到 Webhook 事件时，您需要通过验证签名来验证 API 请求的真实性。
+
+1. 获取请求包体的原始数据和时间戳。 从请求 Payload 中提取包体的原始字符串，并从请求头中提取时间戳。
+
+``` javascript
+const bizTimestamp = req.headers['biz-timestamp'];
+```
+
+2. 获取签名， 从请求头中获取签名值。
+
+``` javascript
+const signature = req.headers['biz-resp-signature'];
+```
+
+3. 拼接消息并对其进行哈希处理，使用相应的公钥进行验证：
+
+``` javascript
+const CryptoJS = require('ctypto');
+const nacl = require("tweetnacl");
+
+const message = `${req.rawBody}|${bizTimestamp}`;
+const vk = Buffer.from(PUB_KEY, "hex");
+
+const hash2String = CryptoJS.SHA256(CryptoJS.SHA256(message)).toString(CryptoJS.enc.Hex);
+try {
+    const signatureBuffer = Buffer.from(signature, "hex");
+    const messageBuffer = Buffer.from(hash2String, "hex");
+    return nacl.sign.detached.verify(
+        messageBuffer,
+        signatureBuffer,
+        vk
+    );
+} catch (error) {
+    console.log("Signature verification failed", error);
+    return false;
+}
+```
+
+<Note>
+  **PUB_KEY** 请联系我们获取
+</Note>
+
+4. 完整验签示例
+
+``` javascript
+const CryptoJS = require('ctypto');
+const nacl = require("tweetnacl");
+
+function verifySignature(req, res) {
+    const signature = req.headers['biz-resp-signature'];
+    const bizTimestamp = req.headers['biz-timestamp'];
+
+    if (!signature || !bizTimestamp) {
+        res.status(401).send('Missing signature or timestamp');
+        return false;
+    }
+
+    const message = `${req.rawBody}|${bizTimestamp}`;
+
+    const vk = Buffer.from(PUB_KEY, "hex");
+
+    const hash2String = CryptoJS.SHA256(CryptoJS.SHA256(message)).toString(CryptoJS.enc.Hex);
+    try {
+        const signatureBuffer = Buffer.from(signature, "hex");
+        const messageBuffer = Buffer.from(hash2String, "hex");
+        return nacl.sign.detached.verify(
+            messageBuffer,
+            signatureBuffer,
+            vk
+        );
+    } catch (error) {
+        console.log("Signature verification failed", error);
+        return false;
+    }
+
+    return true;
+}
+```
 
 ## Webhook 事件
 
@@ -49,10 +134,20 @@ app.use(express.json({
 
 // Webhook endpoint
 app.post("/api/webhook", (req, res) => {
+    if (!verifySignature(req, res)) {
+        res.status(401).send('Invalid signature');
+        return;
+    }
     const event = req.rawBody;
     console.log(event);
 
-    res.sendStatus(201);    // res.send('ok');
+    const datas = JSON.parse(req.rawBody);
+    // check wallet id
+    if (datas.data.wallet_id == wallet_id) {
+        // Add your business logic here
+    }
+
+    res.sendStatus(201);
 });
 
 // Server startup
