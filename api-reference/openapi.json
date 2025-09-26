@@ -866,6 +866,15 @@
         "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
         "parameters": [
           {
+            "name": "wallet_ids",
+            "in": "query",
+            "description": "钱包 ID，以 **,** 分隔。",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "request_id",
             "in": "query",
             "required": false,
@@ -937,6 +946,24 @@
               "type": "integer",
               "default": 10,
               "example": 10
+            }
+          },
+          {
+            "name": "min_created_timestamp",
+            "in": "query",
+            "required": false,
+            "description": "交易创建时间，采用 Unix 时间戳格式，以毫秒为单位。您可以使用此参数筛选指定时间及之后创建的交易。\n\n如果未提供，则默认值为当前时间之前的 90 天。此默认值可能会有所变更。",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_created_timestamp",
+            "in": "query",
+            "required": false,
+            "description": "交易创建时间，采用 Unix 时间戳格式，以毫秒为单位。您可以使用此参数筛选在指定时间或之前创建的交易。\n\n如果未提供，则默认值为当前时间。此默认值可能会有所变更。",
+            "schema": {
+              "type": "integer"
             }
           },
           {
