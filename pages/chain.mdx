@@ -11,6 +11,17 @@ title: '支持的币种与公链'
 - Polygon (MATIC_USDT)
 - BNB Smart Chain (BSC_USDT)
 
+``` javascript
+[
+    "TRON_USDT",
+    "ETH_USDT",
+    "ARBITRUM_USDT",
+    "BASE_USDT",
+    "MATIC_USDT",
+    "BSC_USDT",
+]
+```
+
 ## USDC 支持的公链
 
 - Ethereum (ETH_USDC)
@@ -18,3 +29,27 @@ title: '支持的币种与公链'
 - Base (BASE_USDC)
 - Polygon (MATIC_USDC2)
 - BNB Smart Chain (BSC_USDC)
+
+``` javascript
+[
+    "ETH_USDC",
+    "ARBITRUM_USDCOIN",
+    "BASE_USDC",
+    "MATIC_USDC2",
+    "BSC_USDC",
+]
+```
+
+## NUSD 支持的公链
+
+- Base (BASE_NUSD)
+
+``` javascript
+[
+    "BASE_NUSD",
+]
+```
+
+<Note>
+  在收到webhook充值通知时，需要判断一下消息中的token_id，只有在上面的数组中包含该token_id时，才是正确的充值信息，如果token_id不属于上面三个数组，则忽略该条消息。
+</Note>
