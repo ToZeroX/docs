@@ -31,9 +31,18 @@
             ]
           },
           {
-            "group": "接口说明",
+            "group": "Payin 接口说明",
             "pages": [
               "api-reference/endpoint/createAddress"
+            ]
+          },
+          {
+            "group": "Payout 接口说明",
+            "pages": [
+              "api-reference/payout/tokens",
+              "api-reference/payout/fees",
+              "api-reference/payout/withdraw",
+              "api-reference/payout/withdrawList"
             ]
           },
           {
@@ -45,7 +54,8 @@
           {
             "group": "Webhook",
             "pages": [
-              "pages/webhook"
+              "pages/webhook",
+              "pages/webhook-withdraw"
             ]
           },
           {

@@ -1,0 +1,23 @@
+---
+title: '提现回调'
+---
+
+## 字段说明 (提现时，webhook收到的内容)
+
+``` json
+{
+    "request_id": "7d7aef02-07c8-4ebd-830e-97282766d3b6",     // 请求id
+    "wallet_id": "e9167870-e18b-4e82-8b87-92ec7ede8e45",      // 钱包id
+    "transaction_id": "b02dc125-cf75-4487-a5b4-b350ced7e78c", // 交易id
+    "hash": "",                                               // 交易hash
+    "type": "Withdrawal",                                     // 交易类型
+    "to": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46",       // 提现接收方的地址
+    "chain_id": "BASE_ETH",                                   // 提现的链
+    "token_id": "BASE_USDT",                                  // 提现币种的唯一标识
+    "amount": 1.19,                                           // 提现数量
+    "confirmed_num": 0,                                       // 确认数
+    "status": "Processing",                                   // 提现状态
+    "create_at": 1761036574369,                               // 创建时间
+    "update_at": 1761036574369                                // 更新时间
+}
+```

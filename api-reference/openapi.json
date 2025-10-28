@@ -23,12 +23,21 @@
         "in": "header",
         "name": "Biz-Api-Signature",
         "description": "签名串，请求需在请求头中携带。"
+      },
+      "AUTHORIZATION": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Bearer token，请求需在请求头中携带。"
       }
     },
     "schemas": {
       "CreateAddressesRequest": {
         "type": "object",
-        "required": ["chain_id", "count"],
+        "required": [
+          "chain_id",
+          "count"
+        ],
         "properties": {
           "chain_id": {
             "type": "string",
@@ -45,7 +54,9 @@
           "taproot_script_tree_hashes": {
             "type": "array",
             "description": "用于生成 Tweaked Taproot 地址的脚本树哈希列表。仅在生成 Tweaked Taproot 地址时必填。",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
           "taproot_internal_address": {
             "type": "string",
@@ -80,7 +91,10 @@
             "description": "生成的地址对象列表。",
             "items": {
               "type": "object",
-              "required": ["address", "chain_id"],
+              "required": [
+                "address",
+                "chain_id"
+              ],
               "properties": {
                 "address": {
                   "type": "string",
@@ -151,7 +165,13 @@
       },
       "TransactionResponse": {
         "type": "object",
-        "required": ["transaction_id", "wallet_id", "chain_id", "status", "created_timestamp"],
+        "required": [
+          "transaction_id",
+          "wallet_id",
+          "chain_id",
+          "status",
+          "created_timestamp"
+        ],
         "properties": {
           "transaction_id": {
             "type": "string",
@@ -171,7 +191,16 @@
             "type": "string",
             "description": "交易状态，详细信息可查看 [交易状态说明](/pages/status)。",
             "enum": [
-              "Submitted", "PendingScreening", "PendingAuthorization", "PendingSignature", "Broadcasting", "Confirming", "Completed", "Failed", "Rejected", "Pending"
+              "Submitted",
+              "PendingScreening",
+              "PendingAuthorization",
+              "PendingSignature",
+              "Broadcasting",
+              "Confirming",
+              "Completed",
+              "Failed",
+              "Rejected",
+              "Pending"
             ]
           },
           "source": {
@@ -289,7 +318,16 @@
                 "type": "string",
                 "description": "Webhook 事件对应的交易状态，为 **Completed** 时，充值成功到账",
                 "enum": [
-                  "Submitted", "PendingScreening", "PendingAuthorization", "PendingSignature", "Broadcasting", "Confirming", "Completed", "Failed", "Rejected", "Pending"
+                  "Submitted",
+                  "PendingScreening",
+                  "PendingAuthorization",
+                  "PendingSignature",
+                  "Broadcasting",
+                  "Confirming",
+                  "Completed",
+                  "Failed",
+                  "Rejected",
+                  "Pending"
                 ]
               },
               "initiator_type": {
@@ -314,7 +352,16 @@
                     "type": "string",
                     "description": "充值来源类型，用户充值时，需要关注 **DepositFromAddress**",
                     "enum": [
-                      "Asset", "Web3", "Org-Controlled", "User-Controlled", "Safe{Wallet}", "Main", "Sub", "DepositFromAddress", "DepositFromWallet", "DepositFromLoop"
+                      "Asset",
+                      "Web3",
+                      "Org-Controlled",
+                      "User-Controlled",
+                      "Safe{Wallet}",
+                      "Main",
+                      "Sub",
+                      "DepositFromAddress",
+                      "DepositFromWallet",
+                      "DepositFromLoop"
                     ]
                   },
                   "wallet_id": {
@@ -352,7 +399,20 @@
                     "type": "string",
                     "description": "充值目标类型，用户充值时，需要关注 **DepositToAddress**",
                     "enum": [
-                      "Address", "CustodialWallet", "ExchangeWallet", "EVM_Contract", "SOL_Contract", "COSMOS_Contract", "EVM_EIP_191_Signature", "EVM_EIP_712_Signature", "BTC_BIP_137_Signature", "BTC_BIP_322_Signature", "COSMOS_ADR_36_Signature", "Raw_Message_Signature", "DepositToAddress", "DepositToWallet"
+                      "Address",
+                      "CustodialWallet",
+                      "ExchangeWallet",
+                      "EVM_Contract",
+                      "SOL_Contract",
+                      "COSMOS_Contract",
+                      "EVM_EIP_191_Signature",
+                      "EVM_EIP_712_Signature",
+                      "BTC_BIP_137_Signature",
+                      "BTC_BIP_322_Signature",
+                      "COSMOS_ADR_36_Signature",
+                      "Raw_Message_Signature",
+                      "DepositToAddress",
+                      "DepositToWallet"
                     ]
                   },
                   "wallet_id": {
@@ -489,14 +549,29 @@
                 "type": "string",
                 "description": "交易状态，为 **Completed** 时，充值成功到账",
                 "enum": [
-                  "Submitted", "PendingScreening", "PendingAuthorization", "PendingSignature", "Broadcasting", "Confirming", "Completed", "Failed", "Rejected", "Pending"
+                  "Submitted",
+                  "PendingScreening",
+                  "PendingAuthorization",
+                  "PendingSignature",
+                  "Broadcasting",
+                  "Confirming",
+                  "Completed",
+                  "Failed",
+                  "Rejected",
+                  "Pending"
                 ]
               },
               "type": {
                 "type": "string",
                 "description": "事件类型， **Deposit** 为充值",
                 "enum": [
-                  "Deposit", "Withdrawal", "ContractCall", "MessageSign", "ExternalSafeTx", "Stake", "Unstake"
+                  "Deposit",
+                  "Withdrawal",
+                  "ContractCall",
+                  "MessageSign",
+                  "ExternalSafeTx",
+                  "Stake",
+                  "Unstake"
                 ]
               },
               "source": {
@@ -507,7 +582,16 @@
                     "type": "string",
                     "description": "充值来源类型，用户充值时，需要关注 **DepositFromAddress**",
                     "enum": [
-                      "Asset", "Web3", "Org-Controlled", "User-Controlled", "Safe{Wallet}", "Main", "Sub", "DepositFromAddress", "DepositFromWallet", "DepositFromLoop"
+                      "Asset",
+                      "Web3",
+                      "Org-Controlled",
+                      "User-Controlled",
+                      "Safe{Wallet}",
+                      "Main",
+                      "Sub",
+                      "DepositFromAddress",
+                      "DepositFromWallet",
+                      "DepositFromLoop"
                     ]
                   },
                   "wallet_id": {
@@ -545,7 +629,20 @@
                     "type": "string",
                     "description": "充值目标类型，用户充值时，需要关注 **DepositToAddress**",
                     "enum": [
-                      "Address", "CustodialWallet", "ExchangeWallet", "EVM_Contract", "SOL_Contract", "COSMOS_Contract", "EVM_EIP_191_Signature", "EVM_EIP_712_Signature", "BTC_BIP_137_Signature", "BTC_BIP_322_Signature", "COSMOS_ADR_36_Signature", "Raw_Message_Signature", "DepositToAddress", "DepositToWallet"
+                      "Address",
+                      "CustodialWallet",
+                      "ExchangeWallet",
+                      "EVM_Contract",
+                      "SOL_Contract",
+                      "COSMOS_Contract",
+                      "EVM_EIP_191_Signature",
+                      "EVM_EIP_712_Signature",
+                      "BTC_BIP_137_Signature",
+                      "BTC_BIP_322_Signature",
+                      "COSMOS_ADR_36_Signature",
+                      "Raw_Message_Signature",
+                      "DepositToAddress",
+                      "DepositToWallet"
                     ]
                   },
                   "wallet_id": {
@@ -677,31 +774,307 @@
             "example": 10000
           }
         }
+      },
+      "TokensRes": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "币种列表",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "description": "币种总数量"
+              },
+              "tokens": {
+                "type": "array",
+                "description": "币种列表",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "chain_id": {
+                      "type": "string",
+                      "description": "币种所属的链",
+                      "example": "ARBITRUM_ETH"
+                    },
+                    "token_id": {
+                      "type": "string",
+                      "description": "币种唯一标识",
+                      "example": "ARBITRUM_USDT"
+                    },
+                    "symbol": {
+                      "type": "string",
+                      "description": "币种名称",
+                      "example": "USDT"
+                    },
+                    "can_deposit": {
+                      "type": "boolean",
+                      "description": "币种是否开放充值",
+                      "example": true
+                    },
+                    "can_withdraw": {
+                      "type": "boolean",
+                      "description": "币种是否开放提现",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，state非0时存在"
+          }
+        }
+      },
+      "FeesRes": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "费用详情",
+            "properties": {
+              "deposit": {
+                "type": "string",
+                "format": "float",
+                "description": "充值收取的服务费，乘100后为百分比",
+                "example": "0.01"
+              },
+              "settle": {
+                "type": "string",
+                "format": "integer",
+                "description": "结算费用，固定值，单位为USD",
+                "example": "5"
+              },
+              "withdraw": {
+                "type": "string",
+                "format": "integer",
+                "description": "提现收取的服务费，乘100后为百分比",
+                "example": "0.01"
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，state非0时存在"
+          }
+        }
+      },
+      "WithdrawReq": {
+        "type": "object",
+        "required": [
+          "request_id",
+          "wallet_id",
+          "to",
+          "amount",
+          "chain_id",
+          "token_id"
+        ],
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "请求方的id，需要唯一",
+            "example": "d8551182-0aee-4346-929e-05c99081352a"
+          },
+          "wallet_id": {
+            "type": "string",
+            "description": "提币的钱包id",
+            "example": "e9167870-e18b-4e82-8b87-92ec7ede8e45"
+          },
+          "to": {
+            "type": "string",
+            "description": "提币至的地址",
+            "example": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "提币数量",
+            "example": "10.08"
+          },
+          "chain_id": {
+            "type": "string",
+            "description": "链 ID",
+            "example": "BASE_ETH"
+          },
+          "token_id": {
+            "type": "string",
+            "description": "币种唯一标识",
+            "example": "BASE_USDT"
+          }
+        }
+      },
+      "WithdrawRes": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "提币详情",
+            "properties": {
+              "transaction_id": {
+                "type": "string",
+                "description": "此次提币的交易id",
+                "example": "28f2505c-55ab-4fc7-8620-152c4045981a"
+              },
+              "request_id": {
+                "type": "string",
+                "description": "此次提币的请求id",
+                "example": "9bfa5014-2f12-4eb8-b979-3cf8cb947b45"
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，state非0时存在"
+          }
+        }
+      },
+      "WithdrawListRes": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "交易列表",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "description": "数据总条数"
+              },
+              "tokens": {
+                "type": "array",
+                "description": "交易列表",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "description": "请求方唯一id",
+                      "example": "7d7aef02-07c8-4ebd-830e-97282766d3b6"
+                    },
+                    "wallet_id": {
+                      "type": "string",
+                      "description": "钱包id",
+                      "example": "e9167870-e18b-4e82-8b87-92ec7ede8e45"
+                    },
+                    "chain_id": {
+                      "type": "string",
+                      "description": "链 ID",
+                      "example": "BASE_ETH"
+                    },
+                    "token_id": {
+                      "type": "string",
+                      "description": "币种唯一标识",
+                      "example": "BASE_USDT"
+                    },
+                    "address": {
+                      "type": "string",
+                      "description": "提币至的地址",
+                      "example": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46"
+                    },
+                    "amount": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "提币数量",
+                      "example": "10.08"
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "description": "交易id",
+                      "example": "b02dc125-cf75-4487-a5b4-b350ced7e78c"
+                    },
+                    "hash": {
+                      "type": "string",
+                      "description": "交易哈希",
+                      "example": "0x14cee980709d85f8f0571b8e0a2e737bc346003fbe533b80e70dda0793a10ca3"
+                    },
+                    "confirmed_num": {
+                      "type": "integer",
+                      "description": "已确认次数",
+                      "example": 0
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "交易状态",
+                      "example": "Processing"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "description": "交易创建时间（ISO 8601）。",
+                      "example": "2025-10-21T08:49:34.369Z"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "description": "交易最后更新时间戳（ISO 8601）。",
+                      "example": "2025-10-21T08:49:34.369Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，state非0时存在"
+          }
+        }
       }
     }
   },
   "paths": {
     "/v2/wallets/{wallet_id}/addresses": {
       "post": {
-        "tags": ["Addresses"],
+        "tags": [
+          "Addresses"
+        ],
         "operationId": "createAddressesInWallet",
         "summary": "在钱包内生成地址",
         "description": "在指定钱包内一次生成一个或多个地址。支持生成 Taproot（含 Tweaked Taproot）等格式；MPC 钱包会返回派生路径、公钥等附加信息。",
-        "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
         "parameters": [
           {
             "name": "wallet_id",
             "in": "path",
             "required": true,
             "description": "钱包 ID。",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateAddressesRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/CreateAddressesRequest"
+              }
             }
           }
         },
@@ -710,7 +1083,9 @@
             "description": "请求成功，返回生成的地址列表及相关信息。",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CreateAddressesResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAddressesResponse"
+                }
               }
             }
           },
@@ -718,7 +1093,9 @@
             "description": "请求成功，返回生成的地址列表及相关信息。",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CreateAddressesResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAddressesResponse"
+                }
               }
             }
           }
@@ -727,18 +1104,28 @@
     },
     "/v2/transactions/{transaction_id}": {
       "get": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "operationId": "getTransactionInformation",
         "summary": "获取交易信息",
         "description": "获取指定交易的详细信息，例如交易状态、来源地址、目标地址、金额和手续费等。",
-        "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
         "parameters": [
           {
             "name": "transaction_id",
             "in": "path",
             "required": true,
             "description": "交易 ID。",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -746,7 +1133,9 @@
             "description": "请求成功，返回交易详情。",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/TransactionResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponse"
+                }
               }
             }
           },
@@ -770,18 +1159,28 @@
     },
     "/v2/webhooks/endpoints/{endpoint_id}/events": {
       "get": {
-        "tags": ["Webhooks"],
+        "tags": [
+          "Webhooks"
+        ],
         "operationId": "listWebhookEvents",
         "summary": "列出所有 Webhook 事件",
         "description": "检索指定 webhook 在最近 30 天内发生的所有事件。",
-        "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
         "parameters": [
           {
             "name": "endpoint_id",
             "in": "path",
             "required": true,
             "description": "Webhook 的唯一 ID",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "status",
@@ -790,7 +1189,11 @@
             "description": "事件状态过滤器",
             "schema": {
               "type": "string",
-              "enum": ["Success", "Failed", "Pending"],
+              "enum": [
+                "Success",
+                "Failed",
+                "Pending"
+              ],
               "example": "Success"
             }
           },
@@ -846,7 +1249,9 @@
                     "data": {
                       "type": "array",
                       "description": "Webhook 事件列表。",
-                      "items": { "$ref": "#/components/schemas/WebhookEvent" }
+                      "items": {
+                        "$ref": "#/components/schemas/WebhookEvent"
+                      }
                     },
                     "pagination": {
                       "$ref": "#/components/schemas/Pagination"
@@ -863,7 +1268,13 @@
       "get": {
         "summary": "此操作将检索您组织下的所有交易。",
         "description": "您可以按请求 ID、交易 ID、交易哈希、类型、状态和时间戳筛选结果。您还可以对查询结果进行分页和排序。",
-        "security": [{ "BizApiKey": [], "BizApiNonce": [], "BizApiSignature": [] }],
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
         "parameters": [
           {
             "name": "wallet_ids",
@@ -998,7 +1409,9 @@
                     "data": {
                       "type": "array",
                       "description": "交易列表",
-                      "items": { "$ref": "#/components/schemas/TransactionsListRes" }
+                      "items": {
+                        "$ref": "#/components/schemas/TransactionsListRes"
+                      }
                     },
                     "pagination": {
                       "$ref": "#/components/schemas/Pagination"
@@ -1018,12 +1431,240 @@
                     "data": {
                       "type": "array",
                       "description": "交易列表",
-                      "items": { "$ref": "#/components/schemas/TransactionsListRes" }
+                      "items": {
+                        "$ref": "#/components/schemas/TransactionsListRes"
+                      }
                     },
                     "pagination": {
                       "$ref": "#/components/schemas/Pagination"
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/tokens": {
+      "get": {
+        "description": "获取所有支持的token",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页数",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "description": "每页的条数",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回币种数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokensRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回币种数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokensRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/fees": {
+      "get": {
+        "description": "获取平台服务费收取规则",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回服务费数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeesRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回服务费数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeesRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/withdraw": {
+      "post": {
+        "description": "发起提币请求",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WithdrawReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功，返回提币交易id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回提币交易id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/txs": {
+      "get": {
+        "description": "获取交易列表 (暂时只支持提币交易)",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "query",
+            "description": "请求方的id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transaction_id",
+            "in": "query",
+            "description": "交易id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wallet_id",
+            "in": "query",
+            "description": "钱包id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "交易类型，目前只支持 **Withdrawal** 类型的提币交易",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "接收方地址",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "当前提币状态\n\n 可用选项 \n - Processing : 待确认 \n - Approved : 审核通过 \n - Rejected : 审核被拒绝 \n - Cancelled : 已取消 \n - Signed : 已离线签名 \n - Pending : 已上链 \n - Confirming : 确认中 \n - Completed : 已完成 \n - Failed : 失败",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页数",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "description": "每页的条数",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回交易数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawListRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回交易数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawListRes"
                 }
               }
             }
