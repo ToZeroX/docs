@@ -41,6 +41,7 @@
             "pages": [
               "api-reference/payout/tokens",
               "api-reference/payout/fees",
+              "api-reference/payout/balance",
               "api-reference/payout/withdraw",
               "api-reference/payout/withdrawList"
             ]

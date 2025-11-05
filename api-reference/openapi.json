@@ -833,6 +833,38 @@
           }
         }
       },
+      "BalanceRes": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "余额信息",
+            "properties": {
+              "available": {
+                "type": "string",
+                "format": "float",
+                "description": "当前可用余额",
+                "example": "4895.90"
+              },
+              "hold": {
+                "type": "string",
+                "format": "float",
+                "description": "当前冻结金额",
+                "example": "4895.90"
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，state非0时存在"
+          }
+        }
+      },
       "FeesRes": {
         "type": "object",
         "properties": {
@@ -912,6 +944,11 @@
             "type": "string",
             "description": "币种唯一标识",
             "example": "BASE_USDT"
+          },
+          "payer": {
+            "type": "string",
+            "description": "手续费承担方，默认为用户承担 \n - App: 项目方承担 \n - User: 用户承担",
+            "example": "App"
           }
         }
       },
@@ -1665,6 +1702,52 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WithdrawListRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/balance": {
+      "get": {
+        "description": "获取指定钱包的余额",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "wallet_id",
+            "in": "query",
+            "description": "钱包id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "e9167870-e18b-4e82-8b87-92ec7ede8e45"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回钱包余额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回钱包余额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceRes"
                 }
               }
             }
