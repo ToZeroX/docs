@@ -1,0 +1,101 @@
+---
+title: '充值回调'
+---
+
+## 字段说明 (用户充值时，webhook收到的内容)
+
+``` json
+{
+	"event_id": "48bf7cdc-7dd9-4d61-aa61-496003a4787c",
+	"url": "https://apidev.nusd.me/webhooks/real",
+	"created_timestamp": 1757407060503,
+	"type": "wallets.transaction.created", // 重点关注 type: "wallets.transaction.succeeded", 该事件为充值到账
+	"data": {
+		"transaction_id": "157d3c84-294b-4ca1-8ca7-f0bbb3b98787",
+		"wallet_id": "5c8e4ee0-e701-43b8-9724-7815d7c12643",
+		"type": "Deposit", // Deposit 为充值
+		"status": "Confirming", // status为 "Completed"时，充值到账
+		"initiator_type": "External",
+		"source": { // 充值来源
+			"source_type": "DepositFromAddress",
+			"addresses": ["0xf3f42f3d87ac8687b845146ec38aa9672d9669ab"],
+			"wallet_id": null,
+			"wallet_type": null,
+			"wallet_subtype": null
+		},
+		"destination": { // 充值目标
+			"destination_type": "DepositToAddress",
+			"amount": "0.001",
+			"address": "0x25246af7149a20b2d742b0796431df070eec7048",
+			"wallet_id": "5c8e4ee0-e701-43b8-9724-7815d7c12643",
+			"wallet_type": "MPC",
+			"wallet_subtype": "Org-Controlled",
+			"memo": null,
+			"tx_info": null
+		},
+		"created_timestamp": 1757407059769,
+		"updated_timestamp": 1757407059770,
+		"cobo_id": "20250909163739000102570000001947",
+		"request_id": null,
+		"sub_status": null,
+		"failed_reason": null,
+		"chain_id": "TBSC_BNB",
+		"token_id": "TBSC_BNB",
+		"asset_id": null,
+		"result": null,
+		"fee": null,
+		"initiator": null,
+		"confirmed_num": 1,
+		"confirming_threshold": 15,
+		"transaction_hash": "0x77e1a72d410f279d589b185b4b74d4cc7e030cc67d42c7f0f0d3a96d84c08664",
+		"block_info": {
+			"block_number": 64752220,
+			"block_timestamp": 1757407051000,
+			"block_hash": "0xc4dc0d85b266012de8253894ca3a1d0afc06f2814704c1a2dbdbd3006ab2cfdd"
+		},
+		"raw_tx_info": {
+			"used_nonce": 1004,
+			"selected_utxos": [],
+			"raw_tx": null,
+			"unsigned_raw_tx": null,
+			"utxo_change": null
+		},
+		"replacement": null,
+		"fueling_info": null,
+		"category": [],
+		"cobo_category": [],
+		"description": "",
+		"is_loop": false,
+		"extra": null,
+		"timeline": [{
+			"status": "Confirming",
+			"finished": false,
+			"finished_timestamp": 1757407059000,
+			"sub_status": null
+		}],
+		"data_type": "Transaction"
+	}
+}
+```
+
+## 重要说明
+
+因为有的链充值到账比较慢，所以 Completed 事件可能不会立即收到，为了不让用户等待过久，所以需要做一下兼容处理，以下两种情况，只要满足其中一种，就可以判断为充值已经到账
+
+  1. 当状态为 <code>Completed</code> 时，用户充值到账
+  2. 当 区块确认数 (<code>confirmed_num</code> 字段) >= 10 时，用户充值到账
+
+<Note>
+  为什么10个区块后即可认为交易到账？
+
+  在以太坊系列币种（如ETH、GETH）的交易确认中，我们采用了基于Ethereum 2.0升级后Beacon Chain（信标链）的新确认机制。每个区块对应信标链的一个时间槽（Slot），通过信标链的Finalize状态判断交易是否到达终态。这种机制显著降低了区块被分叉回退的概率（已极其罕见），确保交易确认的可靠性。
+
+  确认流程与时间说明：
+  - 我们同时检查ETH主链的区块确认数和信标链的Finalize状态。
+  - 信标链的Finalize确认相较传统主链确认稍慢，通常需要更多时间。
+  - 官方建议的完全确认时间为15-20分钟，相当于约100个区块，以确保交易绝对终态。
+  - 但在实际应用中，10个区块后交易被回退的概率已极低，用户侧可认为交易已到账。
+
+  结论：
+  10个区块后即可认为交易到账，是因为新确认机制在Beacon Chain的支持下大幅提升了区块稳定性，用户可在此阶段放心认为交易已完成，而100个区块的完全确认则是为了满足更高的确定性需求。
+</Note>

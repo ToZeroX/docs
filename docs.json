@@ -39,8 +39,10 @@
           {
             "group": "Payout 接口说明",
             "pages": [
+              "api-reference/payout/chains",
               "api-reference/payout/tokens",
               "api-reference/payout/fees",
+              "api-reference/payout/address",
               "api-reference/payout/balance",
               "api-reference/payout/withdraw",
               "api-reference/payout/withdrawList"
@@ -56,6 +58,7 @@
             "group": "Webhook",
             "pages": [
               "pages/webhook",
+              "pages/webhook-deposit",
               "pages/webhook-withdraw"
             ]
           },
