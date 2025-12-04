@@ -31,26 +31,31 @@
             ]
           },
           {
-            "group": "Payin 接口说明",
+            "group": "公共接口",
             "pages": [
-              "api-reference/endpoint/createAddress"
+              "api-reference/endpoint/chains",
+              "api-reference/endpoint/tokens",
+              "api-reference/endpoint/fees"
             ]
           },
           {
-            "group": "Payout 接口说明",
+            "group": "钱包接口",
             "pages": [
-              "api-reference/payout/chains",
-              "api-reference/payout/tokens",
-              "api-reference/payout/fees",
-              "api-reference/payout/address",
-              "api-reference/payout/balance",
-              "api-reference/payout/withdraw",
-              "api-reference/payout/withdrawList"
+              "api-reference/endpoint/address",
+              "api-reference/endpoint/balance"
+            ]
+          },
+          {
+            "group": "交易接口",
+            "pages": [
+              "api-reference/endpoint/withdraw",
+              "api-reference/endpoint/withdrawList"
             ]
           },
           {
             "group": "Checkout 集成",
             "pages": [
+              "api-reference/endpoint/createAddress",
               "pages/checkout"
             ]
           },
