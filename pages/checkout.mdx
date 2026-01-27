@@ -28,10 +28,16 @@ Checkout 界面展示（以移动端为例）
   - payAddress: 收款地址
   - chainType: 链类型
     - TRC20: Tron链
-    - ERC20 或 空: EVM系
+    - ERC20 或 空: EVM系，包含下列所有链，可单独传入单个链，传入时无需区分大小写
+      - Ethereum
+      - Arbitrum
+      - Base
+      - BSC
+      - Matic
   - payAmount: 充值金额
   - payCoin: 充值币种
   - callbackUrl: 回调地址,需要使用 <code>encodeURIComponent</code> 进行编码
+  - 新增 **skip**，传1时，跳过链的确认页面。chainType为ERC20，并且skip为1时，默认的chainType为Ethereum主网
 
 <Note>**payCoin**目前只支持USDT，可以不传</Note>
 
