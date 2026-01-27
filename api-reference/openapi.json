@@ -1721,6 +1721,13 @@
     "/nps/fees": {
       "get": {
         "description": "获取平台服务费收取规则",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
         "parameters": [],
         "responses": {
           "200": {
