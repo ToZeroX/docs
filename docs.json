@@ -41,15 +41,15 @@
             "group": "钱包接口",
             "pages": [
               "api-reference/endpoint/address",
-              "api-reference/endpoint/balance",
-              "api-reference/endpoint/fees"
+              "api-reference/endpoint/balance"
             ]
           },
           {
             "group": "交易接口",
             "pages": [
               "api-reference/endpoint/withdraw",
-              "api-reference/endpoint/withdrawList"
+              "api-reference/endpoint/withdrawList",
+              "api-reference/endpoint/fees"
             ]
           },
           {

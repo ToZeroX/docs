@@ -935,23 +935,68 @@
             "type": "object",
             "description": "费用详情",
             "properties": {
-              "deposit": {
+              "settle_fixed": {
                 "type": "string",
                 "format": "float",
-                "description": "充值收取的服务费，乘100后为百分比",
+                "description": "结算时收取的固定费用",
+                "example": "10"
+              },
+              "settle_ratio": {
+                "type": "string",
+                "format": "float",
+                "description": "结算时收取的百分比费用，乘100后为百分比",
                 "example": "0.01"
               },
-              "settle": {
-                "type": "string",
-                "format": "integer",
-                "description": "结算费用，固定值，单位为USD",
-                "example": "5"
-              },
-              "withdraw": {
-                "type": "string",
-                "format": "integer",
-                "description": "提现收取的服务费，乘100后为百分比",
-                "example": "0.01"
+              "tokens": {
+                "type": "array",
+                "description": "详细的币种收取数据",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "symbol": {
+                      "type": "string",
+                      "description": "真实币种",
+                      "example": "USDT"
+                    },
+                    "token_name": {
+                      "type": "string",
+                      "description": "完整的币种名称",
+                      "example": "ARBITRUM_USDT"
+                    },
+                    "contract_address": {
+                      "type": "string",
+                      "description": "链上合约地址",
+                      "example": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
+                    },
+                    "chain_name": {
+                      "type": "string",
+                      "description": "所属链",
+                      "example": "ARBITRUM_ETH"
+                    },
+                    "deposit": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "充值收取的百分比手续费，乘100后为百分比",
+                      "example": "0.01"
+                    },
+                    "deposit_er": {
+                      "type": "boolean",
+                      "description": "充值时是否会进行汇率转换",
+                      "example": false
+                    },
+                    "withdraw": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "提现收取的百分比手续费，乘100后为百分比",
+                      "example": "0.01"
+                    },
+                    "withdraw_er": {
+                      "type": "boolean",
+                      "description": "提现时是否会进行汇率转换",
+                      "example": false
+                    }
+                  }
+                }
               }
             }
           },
@@ -1728,7 +1773,17 @@
             "BizApiSignature": []
           }
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "wallet_id",
+            "in": "query",
+            "description": "钱包id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "请求成功，返回服务费数据",

@@ -14,6 +14,32 @@ title: '域名及 API 密钥'
 
 | 字段             | 说明                                                                 |
 | ---------------- | -------------------------------------------------------------------- |
-| **API_KEY**       | 请联系我们获取                                                     |
-| **API_SECRET**       | 请联系我们获取                                                     |
+| **API_KEY**       | 公钥 生成方式参考[生成 公钥和私钥](/pages/domains#生成-公钥和私钥)                                                    |
+| **API_SECRET**       | 私钥 生成方式参考[生成 公钥和私钥](/pages/domains#生成-公钥和私钥)                                                      |
 | **wallet_id**       | 钱包id，请联系我们获取                                                     |
+
+## 生成 公钥和私钥
+
+生成一对 Ed25519 密钥对作为 API Key 和 API Secret。
+
+1. 在终端窗口中，运行以下 OpenSSL 命令：
+
+``` bash
+# Generate a private key and save it in the `private.key.pem` file.
+openssl genpkey -algorithm ed25519 -out private_key.pem
+
+# Extract the public key from the private key and save it in the `public.key.pem` file.
+openssl pkey -in private_key.pem -pubout -out public_key.pem
+```
+
+私钥保存在 **private.key.pem** 文件中，公钥保存在 **public.key.pem** 文件中。
+
+2. 您可以通过运行以下命令打印密钥：
+
+``` bash
+# Export the private key in hexadecimal format.
+openssl pkey -in private_key.pem -text | grep 'priv:' -A 3 | tail -n +2 | tr -d ':\n '
+
+# Export the public key in hexadecimal format.
+openssl pkey -pubin -in public_key.pem -text | grep 'pub:' -A 3 | tail -n +2 | tr -d ':\n '
+```

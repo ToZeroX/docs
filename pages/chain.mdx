@@ -53,3 +53,47 @@ title: '支持的币种与公链'
 <Note>
   在收到webhook充值通知时，需要判断一下消息中的token_id，只有在上面的数组中包含该token_id时，才是正确的充值信息，如果token_id不属于上面三个数组，则忽略该条消息。
 </Note>
+
+---
+
+## Payout 支持情况
+
+<Note>
+**充值**：用户向由 API 生成的地址转账，资金进入钱包余额  
+**Payout**：通过 API 从钱包余额提取资金到指定地址
+</Note>
+
+| Chain ID | 链名称 | 充值 | Payout | 备注 |
+|----------|--------|------|--------|------|
+| ETH | Ethereum | ✅ 支持 | ✅ 支持 | 主网络，支持 ERC-20 代币 |
+| BASE_ETH | Base | ✅ 支持 | ✅ 支持 | Coinbase L2 网络 |
+| BSC_BNB | BNB Smart Chain | ✅ 支持 | ✅ 支持 | 币安智能链，支持 BEP-20 代币 |
+| MATIC | Polygon | ✅ 支持 | ✅ 支持 | Layer 2 扩容方案 |
+| ARBITRUM_ETH | Arbitrum | ✅ 支持 | ✅ 支持 | Rollup L2 |
+| TRON | TRON | ✅ 支持 | ❌ 暂不支持 | TRC-20 代币，充值正常 |
+
+<Warning>
+**TRON (TRX) Payout 限制**
+
+⚠️ **TRX / TRON (TRC20)** 网络目前仅支持充值，**暂不支持 Payout 提币功能**，敬请期待后续更新。
+
+如需提取 TRON 网络上的资产，请考虑：
+1. 等待官方支持 TRON Payout 功能
+2. 使用其他支持的 EVM 兼容链进行操作
+</Warning>
+
+## 链选择建议
+
+| 使用场景 | 推荐链 | 原因 |
+|----------|--------|------|
+| 低手续费交易 | MATIC、BSC | Gas 费用较低 |
+| 高频小额交易 | Base、Arbitrum | L2 网络，快速确认 |
+| 大额安全交易 | Ethereum | 最去中心化，最安全 |
+| DeFi 生态丰富 | Ethereum、BSC | 应用生态完善 |
+
+## 接口参考
+
+- [获取支持的链列表](/api-reference/endpoint/chains) 
+- [获取支持的代币列表](/api-reference/endpoint/tokens)
+- [发起提币（Payout）](/api-reference/endpoint/withdraw)
+- [查询钱包余额](/api-reference/endpoint/balance)
