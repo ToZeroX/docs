@@ -30,19 +30,85 @@ title: 'Webhook介绍'
 
 1. 获取请求包体的原始数据和时间戳。 从请求 Payload 中提取包体的原始字符串，并从请求头中提取时间戳。
 
-``` javascript
+<CodeGroup>
+``` go title="Go"
+bizTimestamp := r.Header.Get("biz-timestamp")
+```
+
+``` javascript title="Node.js"
 const bizTimestamp = req.headers['biz-timestamp'];
 ```
+</CodeGroup>
 
 2. 获取签名， 从请求头中获取签名值。
 
-``` javascript
+<CodeGroup>
+``` go title="Go"
+signature := r.Header.Get("biz-resp-signature")
+```
+
+``` javascript title="Node.js"
 const signature = req.headers['biz-resp-signature'];
 ```
+</CodeGroup>
 
 3. 拼接消息并对其进行哈希处理，使用相应的公钥进行验证：
 
-``` javascript
+<CodeGroup>
+``` go title="Go"
+package webhook
+
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
+
+	"golang.org/x/crypto/ed25519"
+)
+
+func doubleSHA256Hex(message string) ([]byte, error) {
+	h1 := sha256.Sum256([]byte(message))
+	h2 := sha256.Sum256(h1[:])
+
+	return h2[:], nil
+}
+
+func VerifySignature(rawBody string, bizTimestamp string, signatureHex string, pubKeyHex string) (bool, error) {
+	if bizTimestamp == "" || signatureHex == "" {
+		return false, errors.New("missing signature or timestamp")
+	}
+
+	msg := rawBody + "|" + bizTimestamp
+
+	msgHash, err := doubleSHA256Hex(msg)
+	if err != nil {
+		return false, err
+	}
+
+	sig, err := hex.DecodeString(signatureHex)
+	if err != nil {
+		return false, err
+	}
+
+	pubKeyBytes, err := hex.DecodeString(pubKeyHex)
+	if err != nil {
+		return false, err
+	}
+
+	// pubKey 必须是 32 bytes
+	if l := len(pubKeyBytes); l != ed25519.PublicKeySize {
+		return false, errors.New("invalid pubkey length, must be 32 bytes (ed25519)")
+	}
+	if l := len(sig); l != ed25519.SignatureSize {
+		return false, errors.New("invalid signature length, must be 64 bytes (ed25519)")
+	}
+
+	ok := ed25519.Verify(ed25519.PublicKey(pubKeyBytes), msgHash, sig)
+	return ok, nil
+}
+```
+
+``` javascript title="Node.js"
 const CryptoJS = require('ctypto');
 const nacl = require("tweetnacl");
 
@@ -63,6 +129,7 @@ try {
     return false;
 }
 ```
+</CodeGroup>
 
 <Note>
   **PUB_KEY** 请联系我们获取
@@ -70,7 +137,70 @@ try {
 
 4. 完整验签示例
 
-``` javascript
+<CodeGroup>
+``` go title="Go"
+package webhook
+
+import (
+	"encoding/hex"
+	"io"
+	"net/http"
+
+	"golang.org/x/crypto/ed25519"
+	"crypto/sha256"
+	"errors"
+)
+
+func VerifySignatureHTTP(w http.ResponseWriter, r *http.Request, pubKeyHex string, rawBody []byte) bool {
+	signature := r.Header.Get("biz-resp-signature")
+	bizTimestamp := r.Header.Get("biz-timestamp")
+
+	if signature == "" || bizTimestamp == "" {
+		http.Error(w, "Missing signature or timestamp", http.StatusUnauthorized)
+		return false
+	}
+
+	message := string(rawBody) + "|" + bizTimestamp
+
+	h1 := sha256.Sum256([]byte(message))
+	h2 := sha256.Sum256(h1[:])
+	messageHash := h2[:] // 32 bytes
+
+	sig, err := hex.DecodeString(signature)
+	if err != nil {
+		http.Error(w, "Invalid signature hex", http.StatusUnauthorized)
+		return false
+	}
+
+	pubKeyBytes, err := hex.DecodeString(pubKeyHex)
+	if err != nil {
+		http.Error(w, "Invalid pubkey hex", http.StatusUnauthorized)
+		return false
+	}
+
+	if len(pubKeyBytes) != ed25519.PublicKeySize || len(sig) != ed25519.SignatureSize {
+		http.Error(w, "Invalid key/signature length", http.StatusUnauthorized)
+		return false
+	}
+
+	if !ed25519.Verify(ed25519.PublicKey(pubKeyBytes), messageHash, sig) {
+		http.Error(w, "Invalid signature", http.StatusUnauthorized)
+		return false
+	}
+
+	return true
+}
+
+func ReadRawBody(r *http.Request) ([]byte, error) {
+	if r.Body == nil {
+		return nil, errors.New("empty body")
+	}
+	defer r.Body.Close()
+	return io.ReadAll(r.Body)
+}
+```
+
+``` javascript title="Node.js"
 const CryptoJS = require('ctypto');
 const nacl = require("tweetnacl");
 
@@ -104,6 +234,7 @@ function verifySignature(req, res) {
     return true;
 }
 ```
+</CodeGroup>
 
 ## Webhook 事件
 
@@ -119,9 +250,128 @@ NUSD 不保证事件将按生成顺序交付。例如，创建转账将生成以
 
 **您的 Endpoint 不应假设事件将按此顺序到达。**
 
-## Nodejs 实现示例
+## 实现示例
 
-``` javascript
+<CodeGroup>
+``` go title="Go"
+package main
+
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+	"time"
+
+	// "your-module/webhook"
+	"io"
+
+	"golang.org/x/crypto/ed25519"
+	"crypto/sha256"
+	"encoding/hex"
+)
+
+const (
+	PORT    = "8000"
+	PUB_KEY = "YOUR_PUB_KEY_HEX"
+)
+
+var walletID = "YOUR_WALLET_ID"
+
+type WebhookPayload struct {
+	Data struct {
+		WalletID string `json:"wallet_id"`
+	} `json:"data"`
+}
+
+func verifySignature(w http.ResponseWriter, r *http.Request, rawBody []byte) bool {
+	signature := r.Header.Get("biz-resp-signature")
+	bizTimestamp := r.Header.Get("biz-timestamp")
+
+	if signature == "" || bizTimestamp == "" {
+		http.Error(w, "Missing signature or timestamp", http.StatusUnauthorized)
+		return false
+	}
+
+	message := string(rawBody) + "|" + bizTimestamp
+
+	h1 := sha256.Sum256([]byte(message))
+	h2 := sha256.Sum256(h1[:])
+	messageHash := h2[:] // 32 bytes
+
+	sig, err := hex.DecodeString(signature)
+	if err != nil {
+		http.Error(w, "Invalid signature hex", http.StatusUnauthorized)
+		return false
+	}
+
+	pubKeyBytes, err := hex.DecodeString(PUB_KEY)
+	if err != nil {
+		http.Error(w, "Invalid pubkey hex", http.StatusUnauthorized)
+		return false
+	}
+
+	if len(pubKeyBytes) != ed25519.PublicKeySize || len(sig) != ed25519.SignatureSize {
+		http.Error(w, "Invalid key/signature length", http.StatusUnauthorized)
+		return false
+	}
+
+	if !ed25519.Verify(ed25519.PublicKey(pubKeyBytes), messageHash, sig) {
+		http.Error(w, "Invalid signature", http.StatusUnauthorized)
+		return false
+	}
+	return true
+}
+
+func webhookHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	_ = ctx
+
+	rawBody, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Read body failed", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	if !verifySignature(w, r, rawBody) {
+		// verifySignature 已经写回 401
+		return
+	}
+
+	log.Println(string(rawBody))
+
+	var payload WebhookPayload
+	if err := json.Unmarshal(rawBody, &payload); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	// check wallet id
+	if payload.Data.WalletID == walletID {
+		// Add your business logic here
+	}
+
+	// 成功响应 201（或 200）
+	w.WriteHeader(http.StatusCreated)
+}
+
+func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/webhook", webhookHandler)
+
+	srv := &http.Server{
+		Addr:         ":" + PORT,
+		Handler:      mux,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+	}
+
+	log.Printf("Server running on http://localhost:%s\n", PORT)
+	log.Fatal(srv.ListenAndServe())
+}
+```
+
+``` javascript title="Node.js"
 const express = require("express");
 
 // Express setup
@@ -156,3 +406,4 @@ app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 ```
+</CodeGroup>

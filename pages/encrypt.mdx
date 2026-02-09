@@ -42,3 +42,528 @@ title: 'API 签名'
     ```
 
 现在您已经计算出了一个 API 签名。
+
+---
+
+## 签名代码示例
+
+以下是各语言的完整签名 Helper 实现。您可以直接复制到项目中使用。
+
+**签名流程：**
+1. 拼接待签名字符串: `{METHOD}|{PATH}|{TIMESTAMP}|{PARAMS}|{BODY}`
+2. 双重 SHA256 哈希: `sha256(sha256(str_to_sign))`
+3. 使用 Ed25519 私钥签名
+4. 将签名结果放入请求头: `BIZ-API-KEY`, `Biz-Api-Nonce`, `Biz-Api-Signature`
+
+<CodeGroup>
+
+```python Python
+import hashlib
+import time
+import json
+import requests
+from nacl.signing import SigningKey
+
+
+class NBTSigner:
+    """NBT API 签名工具类"""
+
+    def __init__(self, api_key: str, api_secret: str, base_url: str = "https://apidev.nusd.me"):
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.base_url = base_url
+
+    def sign(self, method: str, path: str, params: str = "", body: str = "") -> dict:
+        """
+        生成签名并返回请求头
+
+        Args:
+            method: HTTP 方法 (GET/POST)
+            path: API 路径 (如 /nps/balance)
+            params: 查询参数字符串 (如 wallet_id=xxx)
+            body: 请求体 JSON 字符串
+        Returns:
+            包含签名信息的请求头字典
+        """
+        timestamp = str(int(time.time() * 1000))
+        str_to_sign = f"{method}|{path}|{timestamp}|{params}|{body}"
+
+        # 双重 SHA256
+        content_hash = hashlib.sha256(
+            hashlib.sha256(str_to_sign.encode()).digest()
+        ).digest()
+
+        # Ed25519 签名
+        signing_key = SigningKey(bytes.fromhex(self.api_secret))
+        signature = signing_key.sign(content_hash).signature.hex()
+
+        return {
+            "BIZ-API-KEY": self.api_key,
+            "Biz-Api-Nonce": timestamp,
+            "Biz-Api-Signature": signature,
+            "Content-Type": "application/json",
+        }
+
+    def get(self, path: str, params: dict = None) -> dict:
+        """发送签名 GET 请求"""
+        from urllib.parse import urlencode
+        query_string = urlencode(params) if params else ""
+        headers = self.sign("GET", path, params=query_string)
+        url = f"{self.base_url}{path}"
+        if query_string:
+            url += f"?{query_string}"
+        return requests.get(url, headers=headers).json()
+
+    def post(self, path: str, data: dict = None) -> dict:
+        """发送签名 POST 请求"""
+        body = json.dumps(data, ensure_ascii=False) if data else ""
+        headers = self.sign("POST", path, body=body)
+        return requests.post(
+            f"{self.base_url}{path}", headers=headers, data=body
+        ).json()
+
+
+# 使用示例
+if __name__ == "__main__":
+    signer = NBTSigner(
+        api_key="your_api_key",
+        api_secret="your_api_secret_hex"
+    )
+
+    # GET 请求示例
+    result = signer.get("/nps/balance", {"wallet_id": "your_wallet_id"})
+    print("Balance:", result)
+
+    # POST 请求示例
+    result = signer.post("/nps/address", {
+        "wallet_id": "your_wallet_id",
+        "chain_id": "BASE_ETH",
+        "user_token": "user_123"
+    })
+    print("Address:", result)
+```
+
+```javascript JavaScript (Node.js)
+const crypto = require('crypto');
+const nacl = require('tweetnacl');
+
+class NBTSigner {
+  /**
+   * NBT API 签名工具类
+   * @param {string} apiKey - API Key
+   * @param {string} apiSecret - API Secret (hex 字符串)
+   * @param {string} baseURL - API 基础 URL
+   */
+  constructor(apiKey, apiSecret, baseURL = 'https://apidev.nusd.me') {
+    this.apiKey = apiKey;
+    this.apiSecret = apiSecret;
+    this.baseURL = baseURL;
+  }
+
+  /**
+   * 生成签名并返回请求头
+   * @param {string} method - HTTP 方法 (GET/POST)
+   * @param {string} path - API 路径
+   * @param {string} params - 查询参数字符串
+   * @param {string} body - 请求体 JSON 字符串
+   * @returns {Object} 请求头对象
+   */
+  sign(method, path, params = '', body = '') {
+    const timestamp = Date.now().toString();
+    const strToSign = `${method}|${path}|${timestamp}|${params}|${body}`;
+
+    // 双重 SHA256
+    const hash1 = crypto.createHash('sha256').update(strToSign).digest();
+    const hash2 = crypto.createHash('sha256').update(hash1).digest();
+
+    // Ed25519 签名
+    const secretKey = Buffer.from(this.apiSecret, 'hex');
+    const keyPair = nacl.sign.keyPair.fromSecretKey(secretKey);
+    const signature = nacl.sign.detached(hash2, keyPair.secretKey);
+
+    return {
+      'BIZ-API-KEY': this.apiKey,
+      'Biz-Api-Nonce': timestamp,
+      'Biz-Api-Signature': Buffer.from(signature).toString('hex'),
+      'Content-Type': 'application/json',
+    };
+  }
+
+  /**
+   * 发送签名 GET 请求
+   */
+  async get(path, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    const headers = this.sign('GET', path, queryString);
+    const url = queryString
+      ? `${this.baseURL}${path}?${queryString}`
+      : `${this.baseURL}${path}`;
+    const res = await fetch(url, { method: 'GET', headers });
+    return res.json();
+  }
+
+  /**
+   * 发送签名 POST 请求
+   */
+  async post(path, data = {}) {
+    const body = JSON.stringify(data);
+    const headers = this.sign('POST', path, '', body);
+    const res = await fetch(`${this.baseURL}${path}`, {
+      method: 'POST',
+      headers,
+      body,
+    });
+    return res.json();
+  }
+}
+
+// 使用示例
+(async () => {
+  const signer = new NBTSigner(
+    'your_api_key',
+    'your_api_secret_hex'
+  );
+
+  // GET 请求示例
+  const balance = await signer.get('/nps/balance', {
+    wallet_id: 'your_wallet_id',
+  });
+  console.log('Balance:', balance);
+
+  // POST 请求示例
+  const address = await signer.post('/nps/address', {
+    wallet_id: 'your_wallet_id',
+    chain_id: 'BASE_ETH',
+    user_token: 'user_123',
+  });
+  console.log('Address:', address);
+})();
+```
+
+```go Go
+package main
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"strconv"
+	"time"
+
+	"golang.org/x/crypto/ed25519"
+)
+
+// NBTSigner NBT API 签名工具
+type NBTSigner struct {
+	APIKey    string
+	APISecret string
+	BaseURL   string
+}
+
+// NewNBTSigner 创建签名工具实例
+func NewNBTSigner(apiKey, apiSecret string) *NBTSigner {
+	return &NBTSigner{
+		APIKey:    apiKey,
+		APISecret: apiSecret,
+		BaseURL:   "https://apidev.nusd.me",
+	}
+}
+
+// Sign 生成签名，返回请求头
+func (s *NBTSigner) Sign(method, path, params, body string) http.Header {
+	timestamp := strconv.FormatInt(time.Now().UnixMilli(), 10)
+	strToSign := fmt.Sprintf("%s|%s|%s|%s|%s", method, path, timestamp, params, body)
+
+	// 双重 SHA256
+	hash1 := sha256.Sum256([]byte(strToSign))
+	hash2 := sha256.Sum256(hash1[:])
+
+	// Ed25519 签名
+	secretBytes, _ := hex.DecodeString(s.APISecret)
+	privateKey := ed25519.PrivateKey(secretBytes)
+	signature := ed25519.Sign(privateKey, hash2[:])
+
+	headers := http.Header{}
+	headers.Set("BIZ-API-KEY", s.APIKey)
+	headers.Set("Biz-Api-Nonce", timestamp)
+	headers.Set("Biz-Api-Signature", hex.EncodeToString(signature))
+	headers.Set("Content-Type", "application/json")
+	return headers
+}
+
+// Get 发送签名 GET 请求
+func (s *NBTSigner) Get(path string, params url.Values) ([]byte, error) {
+	queryString := params.Encode()
+	headers := s.Sign("GET", path, queryString, "")
+
+	fullURL := s.BaseURL + path
+	if queryString != "" {
+		fullURL += "?" + queryString
+	}
+
+	req, _ := http.NewRequest("GET", fullURL, nil)
+	req.Header = headers
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return io.ReadAll(resp.Body)
+}
+
+// Post 发送签名 POST 请求
+func (s *NBTSigner) Post(path string, data interface{}) ([]byte, error) {
+	bodyBytes, _ := json.Marshal(data)
+	body := string(bodyBytes)
+	headers := s.Sign("POST", path, "", body)
+
+	req, _ := http.NewRequest("POST", s.BaseURL+path, bytes.NewBufferString(body))
+	req.Header = headers
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return io.ReadAll(resp.Body)
+}
+
+func main() {
+	signer := NewNBTSigner("your_api_key", "your_api_secret_hex")
+
+	// GET 请求示例
+	params := url.Values{}
+	params.Add("wallet_id", "your_wallet_id")
+	result, _ := signer.Get("/nps/balance", params)
+	fmt.Println("Balance:", string(result))
+
+	// POST 请求示例
+	data := map[string]interface{}{
+		"wallet_id":  "your_wallet_id",
+		"chain_id":   "BASE_ETH",
+		"user_token": "user_123",
+	}
+	result, _ = signer.Post("/nps/address", data)
+	fmt.Println("Address:", string(result))
+}
+```
+
+```java Java
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.time.Instant;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
+import org.bouncycastle.crypto.signers.Ed25519Signer;
+
+/**
+ * NBT API 签名工具类
+ */
+public class NBTSigner {
+    private final String apiKey;
+    private final String apiSecret;
+    private final String baseURL;
+    private final HttpClient client = HttpClient.newHttpClient();
+
+    public NBTSigner(String apiKey, String apiSecret) {
+        this(apiKey, apiSecret, "https://apidev.nusd.me");
+    }
+
+    public NBTSigner(String apiKey, String apiSecret, String baseURL) {
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
+        this.baseURL = baseURL;
+    }
+
+    /**
+     * 生成签名
+     */
+    public String[] sign(String method, String path, String params, String body)
+            throws Exception {
+        String timestamp = String.valueOf(Instant.now().toEpochMilli());
+        String strToSign = String.format("%s|%s|%s|%s|%s",
+                method, path, timestamp, params, body);
+
+        // 双重 SHA256
+        MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+        byte[] hash1 = sha256.digest(strToSign.getBytes(StandardCharsets.UTF_8));
+        byte[] hash2 = sha256.digest(hash1);
+
+        // Ed25519 签名
+        byte[] secretBytes = hexToBytes(apiSecret);
+        Ed25519PrivateKeyParameters privateKey =
+                new Ed25519PrivateKeyParameters(secretBytes, 0);
+        Ed25519Signer signer = new Ed25519Signer();
+        signer.init(true, privateKey);
+        signer.update(hash2, 0, hash2.length);
+        byte[] signature = signer.generateSignature();
+
+        // 返回 [timestamp, signatureHex]
+        return new String[]{timestamp, bytesToHex(signature)};
+    }
+
+    /**
+     * 发送签名 GET 请求
+     */
+    public String get(String path, Map<String, String> params) throws Exception {
+        String queryString = params.entrySet().stream()
+                .map(e -> URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8)
+                        + "=" + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
+                .collect(Collectors.joining("&"));
+
+        String[] sig = sign("GET", path, queryString, "");
+        String url = baseURL + path + (queryString.isEmpty() ? "" : "?" + queryString);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .header("BIZ-API-KEY", apiKey)
+                .header("Biz-Api-Nonce", sig[0])
+                .header("Biz-Api-Signature", sig[1])
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+    }
+
+    /**
+     * 发送签名 POST 请求
+     */
+    public String post(String path, String jsonBody) throws Exception {
+        String[] sig = sign("POST", path, "", jsonBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseURL + path))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .header("Content-Type", "application/json")
+                .header("BIZ-API-KEY", apiKey)
+                .header("Biz-Api-Nonce", sig[0])
+                .header("Biz-Api-Signature", sig[1])
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+    }
+
+    private static byte[] hexToBytes(String hex) {
+        byte[] bytes = new byte[hex.length() / 2];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) Integer.parseInt(
+                    hex.substring(2 * i, 2 * i + 2), 16);
+        }
+        return bytes;
+    }
+
+    private static String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    // 使用示例
+    public static void main(String[] args) throws Exception {
+        NBTSigner signer = new NBTSigner(
+                "your_api_key", "your_api_secret_hex");
+
+        // GET 请求示例
+        String balance = signer.get("/nps/balance",
+                Map.of("wallet_id", "your_wallet_id"));
+        System.out.println("Balance: " + balance);
+
+        // POST 请求示例
+        String body = """
+                {"wallet_id":"your_wallet_id","chain_id":"BASE_ETH","user_token":"user_123"}
+                """.trim();
+        String address = signer.post("/nps/address", body);
+        System.out.println("Address: " + address);
+    }
+}
+```
+
+```bash cURL
+#!/bin/bash
+# NBT API 签名 Helper 脚本
+# 依赖: python3, pip install pynacl
+
+# ============ 配置 ============
+API_KEY="your_api_key"
+API_SECRET="your_api_secret_hex"
+BASE_URL="https://apidev.nusd.me"
+
+# ============ 签名函数 ============
+nbt_sign() {
+    local METHOD="$1"   # GET 或 POST
+    local PATH="$2"     # API 路径，如 /nps/balance
+    local PARAMS="$3"   # 查询参数字符串 (GET 用)
+    local BODY="$4"     # 请求体 (POST 用)
+
+    TIMESTAMP=$(python3 -c "import time; print(int(time.time()*1000))")
+
+    SIGNATURE=$(python3 -c "
+import hashlib
+from nacl.signing import SigningKey
+
+str_to_sign = '${METHOD}|${PATH}|${TIMESTAMP}|${PARAMS}|${BODY}'
+content_hash = hashlib.sha256(hashlib.sha256(str_to_sign.encode()).digest()).digest()
+sk = SigningKey(bytes.fromhex('${API_SECRET}'))
+print(sk.sign(content_hash).signature.hex())
+")
+
+    echo "${TIMESTAMP}|${SIGNATURE}"
+}
+
+# ============ GET 请求 ============
+nbt_get() {
+    local PATH="$1"
+    local PARAMS="$2"
+
+    IFS='|' read -r TS SIG <<< "$(nbt_sign GET "$PATH" "$PARAMS" "")"
+
+    local URL="${BASE_URL}${PATH}"
+    [ -n "$PARAMS" ] && URL="${URL}?${PARAMS}"
+
+    curl -s -X GET "$URL" \
+        -H "BIZ-API-KEY: ${API_KEY}" \
+        -H "Biz-Api-Nonce: ${TS}" \
+        -H "Biz-Api-Signature: ${SIG}"
+}
+
+# ============ POST 请求 ============
+nbt_post() {
+    local PATH="$1"
+    local BODY="$2"
+
+    IFS='|' read -r TS SIG <<< "$(nbt_sign POST "$PATH" "" "$BODY")"
+
+    curl -s -X POST "${BASE_URL}${PATH}" \
+        -H "Content-Type: application/json" \
+        -H "BIZ-API-KEY: ${API_KEY}" \
+        -H "Biz-Api-Nonce: ${TS}" \
+        -H "Biz-Api-Signature: ${SIG}" \
+        -d "$BODY"
+}
+
+# ============ 使用示例 ============
+# GET 请求
+echo "=== 查询余额 ==="
+nbt_get "/nps/balance" "wallet_id=your_wallet_id"
+
+# POST 请求
+echo -e "\n=== 获取充值地址 ==="
+nbt_post "/nps/address" '{"wallet_id":"your_wallet_id","chain_id":"BASE_ETH","user_token":"user_123"}'
+```
+
+</CodeGroup>

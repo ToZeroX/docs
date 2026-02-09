@@ -4,6 +4,12 @@
     "title": "NUSD Wallet API",
     "version": "v2"
   },
+  "servers": [
+    {
+      "url": "https://apidev.nusd.me",
+      "description": "Development API Server"
+    }
+  ],
   "components": {
     "securitySchemes": {
       "BizApiKey": {
@@ -860,11 +866,6 @@
                       "description": "链id，唯一",
                       "example": "BASE_ETH"
                     },
-                    "rpc": {
-                      "type": "string",
-                      "description": "rpc地址",
-                      "example": "https://mainnet.base.org"
-                    },
                     "status": {
                       "type": "integer",
                       "description": "是否启用\n\n 1: 启用\n 2: 禁用",
@@ -973,7 +974,7 @@
                       "description": "所属链",
                       "example": "ARBITRUM_ETH"
                     },
-                    "deposit": {
+                    "deposit_fee": {
                       "type": "string",
                       "format": "float",
                       "description": "充值收取的百分比手续费，乘100后为百分比",
@@ -984,7 +985,7 @@
                       "description": "充值时是否会进行汇率转换",
                       "example": false
                     },
-                    "withdraw": {
+                    "withdraw_fee": {
                       "type": "string",
                       "format": "float",
                       "description": "提现收取的百分比手续费，乘100后为百分比",
@@ -994,6 +995,18 @@
                       "type": "boolean",
                       "description": "提现时是否会进行汇率转换",
                       "example": false
+                    },
+                    "withdraw_min": {
+                      "type": "string",
+                      "format": "integer",
+                      "description": "提币的最小数量限制",
+                      "example": "50"
+                    },
+                    "withdraw_max": {
+                      "type": "string",
+                      "format": "integer",
+                      "description": "提币的最大数量限制",
+                      "example": "10000"
                     }
                   }
                 }
@@ -1003,6 +1016,25 @@
           "msg": {
             "type": "string",
             "description": "错误消息，state非0时存在"
+          }
+        }
+      },
+      "AddressVerifyReq": {
+        "type": "object",
+        "required": [
+          "chain_id",
+          "address"
+        ],
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "要校验的地址",
+            "example": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46"
+          },
+          "chain_id": {
+            "type": "string",
+            "description": "要校验的链",
+            "example": "BSC_BNB"
           }
         }
       },
@@ -1253,6 +1285,140 @@
                 "type": "string",
                 "description": "地址的备注信息 (EVM和Tron链上地址此字段为空)",
                 "example": "12345678"
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，state非0时存在"
+          }
+        }
+      },
+      "WithdrawDetailRes": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "提币详情",
+            "properties": {
+              "transaction_id": {
+                "type": "string",
+                "description": "交易id",
+                "example": "b02dc125-cf75-4487-a5b4-b350ced7e78c"
+              },
+              "request_id": {
+                "type": "string",
+                "description": "请求id",
+                "example": "d8551182-0aee-4346-929e-05c99081352a"
+              },
+              "wallet_id": {
+                "type": "string",
+                "description": "钱包id",
+                "example": "e9167870-e18b-4e82-8b87-92ec7ede8e45"
+              },
+              "chain_id": {
+                "type": "string",
+                "description": "链 ID",
+                "example": "BASE_ETH"
+              },
+              "token_id": {
+                "type": "string",
+                "description": "币种唯一标识",
+                "example": "BASE_USDT"
+              },
+              "to": {
+                "type": "string",
+                "description": "提币的到账地址",
+                "example": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46"
+              },
+              "type": {
+                "type": "string",
+                "description": "交易类型",
+                "example": "Withdrawal"
+              },
+              "status": {
+                "type": "string",
+                "description": "交易状态",
+                "example": "Completed"
+              },
+              "amount": {
+                "type": "string",
+                "format": "float",
+                "description": "提币数量",
+                "example": "10"
+              },
+              "fee_ratio": {
+                "type": "string",
+                "format": "float",
+                "description": "服务费收取比例 (0.01 表示 1%)",
+                "example": "0.01"
+              },
+              "fee": {
+                "type": "string",
+                "format": "float",
+                "description": "实际收取的手续费",
+                "example": "0.10"
+              },
+              "amount_actual": {
+                "type": "string",
+                "format": "float",
+                "description": "实际到账数量",
+                "example": "9.9"
+              },
+              "hash": {
+                "type": "string",
+                "description": "交易哈希",
+                "example": "0x14cee980709d85f8f0571b8e0a2e737bc346003fbe533b80e70dda0793a10ca3"
+              },
+              "payer": {
+                "type": "string",
+                "description": "手续费支付方",
+                "example": "User"
+              },
+              "created_at": {
+                "type": "string",
+                "description": "交易创建时间（ISO 8601）。",
+                "example": "2025-10-21T08:49:34.369Z"
+              },
+              "updated_at": {
+                "type": "string",
+                "description": "交易最后更新时间戳（ISO 8601）。",
+                "example": "2025-10-21T08:49:34.369Z"
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，state非0时存在"
+          }
+        }
+      },
+      "AddressVerifyRes": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "地址校验结果",
+            "properties": {
+              "is_valid": {
+                "type": "boolean",
+                "description": "地址是否有效",
+                "example": true
+              },
+              "address": {
+                "type": "string",
+                "description": "被校验的地址",
+                "example": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46"
               }
             }
           },
@@ -1763,9 +1929,9 @@
         }
       }
     },
-    "/nps/fees": {
+    "/nps/configs": {
       "get": {
-        "description": "获取平台服务费收取规则",
+        "description": "获取平台设置",
         "security": [
           {
             "BizApiKey": [],
@@ -2032,6 +2198,100 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BalanceRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/tx": {
+      "get": {
+        "description": "获取单笔提币交易详情",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "transaction_id",
+            "in": "query",
+            "description": "交易id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "b02dc125-cf75-4487-a5b4-b350ced7e78c"
+            }
+          },
+          {
+            "name": "request_id",
+            "in": "query",
+            "description": "请求id",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "d8551182-0aee-4346-929e-05c99081352a"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回交易详情",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawDetailRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回交易详情",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawDetailRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/address/verify": {
+      "post": {
+        "description": "校验充值地址有效性",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressVerifyReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功，返回校验结果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressVerifyRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回校验结果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressVerifyRes"
                 }
               }
             }

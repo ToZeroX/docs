@@ -10,9 +10,13 @@
   "favicon": "/favicon.ico",
   "api": {
     "playground": {
-      "display": "simple"
+      "display": "interactive"
     },
-    "examples": { "languages": [] }
+    "examples": {
+      "languages": ["curl", "python", "javascript", "go", "java"],
+      "defaults": "required",
+      "prefill": true
+    }
   },
   "navigation": {
     "tabs": [
@@ -34,7 +38,8 @@
             "group": "公共接口",
             "pages": [
               "api-reference/endpoint/chains",
-              "api-reference/endpoint/tokens"
+              "api-reference/endpoint/tokens",
+              "api-reference/endpoint/addressVerify"
             ]
           },
           {
@@ -47,9 +52,10 @@
           {
             "group": "交易接口",
             "pages": [
+              "api-reference/endpoint/fees",
               "api-reference/endpoint/withdraw",
               "api-reference/endpoint/withdrawList",
-              "api-reference/endpoint/fees"
+              "api-reference/endpoint/withdrawDetail"
             ]
           },
           {

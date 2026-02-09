@@ -1,34 +1,110 @@
 ---
 title: '接口鉴权'
-description: 'Example section for showcasing API endpoints'
+description: 'NBT API接口鉴权说明'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## 概述
 
-## Welcome
+NBT API 使用 Ed25519 数字签名进行身份验证，确保接口调用的安全性和完整性。
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## 鉴权流程
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+### 请求头参数
 
+所有需要签名的接口都需要包含以下请求头：
 
-## Authentication
+| 参数名 | 类型 | 必填 | 描述 |
+|--------|------|------|------|
+| `BIZ-API-KEY` | string | 是 | API密钥 |
+| `Biz-Api-Nonce` | string | 是 | 毫秒时间戳 |
+| `Biz-Api-Signature` | string | 是 | 签名字符串 |
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+### 签名生成步骤
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+#### 1. 构造待签名字符串
+
 ```
+str_to_sign = {METHOD}|{PATH}|{TIMESTAMP}|{PARAMS}|{BODY}
+```
+
+- **METHOD**: HTTP方法 (GET, POST等)
+- **PATH**: 请求路径 (例如: `/nps/withdraw`)
+- **TIMESTAMP**: 毫秒时间戳 (Biz-Api-Nonce的值)
+- **PARAMS**: 查询参数字符串 (GET请求使用，POST请求留空)
+- **BODY**: 请求体JSON字符串 (POST请求使用，GET请求留空)
+
+#### 2. 双重SHA256哈希
+
+```python
+import hashlib
+content_hash = hashlib.sha256(hashlib.sha256(str_to_sign.encode()).digest()).digest()
+```
+
+#### 3. Ed25519签名
+
+```python
+import nacl.signing
+signing_key = nacl.signing.SigningKey(bytes.fromhex(api_secret))
+signature = signing_key.sign(content_hash).signature.hex()
+```
+
+## 示例
+
+### GET请求签名示例
+
+```python
+import hashlib
+import nacl.signing
+import time
+
+# 参数
+method = "GET"
+path = "/nps/balance"
+timestamp = str(int(time.time() * 1000))
+params = "wallet_id=e9167870-e18b-4e82-8b87-92ec7ede8e45"
+body = ""
+
+# 构造待签名字符串
+str_to_sign = f"{method}|{path}|{timestamp}|{params}|{body}"
+
+# 双重SHA256
+content_hash = hashlib.sha256(hashlib.sha256(str_to_sign.encode()).digest()).digest()
+
+# Ed25519签名
+api_secret = "your_api_secret_here"
+signing_key = nacl.signing.SigningKey(bytes.fromhex(api_secret))
+signature = signing_key.sign(content_hash).signature.hex()
+```
+
+### POST请求签名示例
+
+```python
+import json
+
+# 参数
+method = "POST"
+path = "/nps/withdraw"
+timestamp = str(int(time.time() * 1000))
+params = ""
+body = json.dumps({
+    "request_id": "d8551182-0aee-4346-929e-05c99081352a",
+    "wallet_id": "e9167870-e18b-4e82-8b87-92ec7ede8e45",
+    "to": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46",
+    "amount": 10.08,
+    "chain_id": "BASE_ETH",
+    "token_id": "BASE_USDT",
+    "payer": "App"
+}, ensure_ascii=False)
+
+# 构造待签名字符串
+str_to_sign = f"{method}|{path}|{timestamp}|{params}|{body}"
+
+# 双重SHA256 + Ed25519签名 (同上)
+```
+
+## 公开接口
+
+以下接口无需签名，可直接调用：
+
+- `GET /nps/tokens` - 获取币种列表
+- `GET /nps/chains` - 获取链列表
