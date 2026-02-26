@@ -2,7 +2,21 @@
 title: '充值回调'
 ---
 
-## 字段说明 (用户充值时，webhook收到的内容)
+## 支持的事件类型（webhookResult.type字段）
+
+- **wallets.transaction.created** - 交易事件已被创建
+- **wallets.transaction.updated** - 交易事件更新
+- **wallets.transaction.succeeded** - 交易成功
+- **wallets.transaction.failed** - 交易失败
+
+## 交易状态说明（webhookResult.data.status字段）
+
+- **Confirming** - 确认中
+- **Rejected** - 被拒绝
+- **Completed** - 已完成
+- **Failed** - 失败
+
+## 其他字段说明 (用户充值时，webhook收到的内容)
 
 ``` json
 {

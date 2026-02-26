@@ -2,6 +2,10 @@
 title: '集成 H5 页面'
 ---
 
+<Note>
+**适用说明**：Checkout 集成适用于需要为终端用户提供支付收银页面的场景。如您仅通过 API 进行钱包管理、资产归集或提币操作，可跳过本章节。
+</Note>
+
 ## 产品特点
 
 Checkout 界面展示（以移动端为例）
@@ -23,7 +27,7 @@ Checkout 界面展示（以移动端为例）
 
 通过url跳转到Checkout页面
 
-  <code>https://pay.nusd.me?address={payAddress}&chainType={chainType}&amount={payAmount}&coin={payCoin}&callbackUrl={callbackUrl}</code>
+  <code>https://checkout.nusdpay.com?address={payAddress}&chainType={chainType}&amount={payAmount}&coin={payCoin}&callbackUrl={callbackUrl}</code>
 
   - payAddress: 收款地址
   - chainType: 链类型
@@ -41,7 +45,7 @@ Checkout 界面展示（以移动端为例）
 
 <Note>**payCoin**目前只支持USDT，可以不传</Note>
 
-示例url: <code>https://pay.nusd.me?address=0xfed5669d48c77f30f384d1615d98f490d37dd94c&chainType=ERC20&amount=10&callbackUrl=https%3A%2F%2Fnusd.global</code>
+示例url: <code>https://checkout.nusdpay.com?address=0xfed5669d48c77f30f384d1615d98f490d37dd94c&chainType=ERC20&amount=10&callbackUrl=https%3A%2F%2Fnusd.global</code>
 
 ## 交易状态
 

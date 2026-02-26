@@ -878,7 +878,7 @@
                     },
                     "update_at": {
                       "type": "string",
-                      "description": "交易最后更新时间戳（ISO 8601）。",
+                      "description": "交易最后更新时间（ISO 8601）。",
                       "example": "2025-10-21T08:49:34.369Z"
                     }
                   }
@@ -959,9 +959,9 @@
                       "description": "真实币种",
                       "example": "USDT"
                     },
-                    "token_name": {
+                    "token_id": {
                       "type": "string",
-                      "description": "完整的币种名称",
+                      "description": "完整的币种名称，token的唯一标识",
                       "example": "ARBITRUM_USDT"
                     },
                     "contract_address": {
@@ -969,7 +969,7 @@
                       "description": "链上合约地址",
                       "example": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
                     },
-                    "chain_name": {
+                    "chain_id": {
                       "type": "string",
                       "description": "所属链",
                       "example": "ARBITRUM_ETH"
@@ -1205,18 +1205,18 @@
                     },
                     "payer": {
                       "type": "string",
-                      "description": "手续费支付方",
+                      "description": "手续费支付方，只有提币时才会有值 \n\n 可用选项 \n - App 项目方承担 \n - User 收款用户承担",
                       "example": "User"
                     },
                     "created_at": {
                       "type": "string",
-                      "description": "交易创建时间（ISO 8601）。",
-                      "example": "2025-10-21T08:49:34.369Z"
+                      "description": "交易创建时间，值为毫秒时间戳。",
+                      "example": "1768287797906"
                     },
                     "updated_at": {
                       "type": "string",
-                      "description": "交易最后更新时间戳（ISO 8601）。",
-                      "example": "2025-10-21T08:49:34.369Z"
+                      "description": "交易最后更新时间，值为毫秒时间戳。",
+                      "example": "1768287828035"
                     }
                   }
                 }
@@ -1377,18 +1377,18 @@
               },
               "payer": {
                 "type": "string",
-                "description": "手续费支付方",
+                "description": "手续费支付方，只有提币时才会有值 \n\n 可用选项 \n - App 项目方承担 \n - User 收款用户承担",
                 "example": "User"
               },
               "created_at": {
                 "type": "string",
-                "description": "交易创建时间（ISO 8601）。",
-                "example": "2025-10-21T08:49:34.369Z"
+                "description": "交易创建时间，值为毫秒时间戳。",
+                "example": "1768287797906"
               },
               "updated_at": {
                 "type": "string",
-                "description": "交易最后更新时间戳（ISO 8601）。",
-                "example": "2025-10-21T08:49:34.369Z"
+                "description": "交易最后更新时间，值为毫秒时间戳。",
+                "example": "1768287828035"
               }
             }
           },
@@ -2092,7 +2092,7 @@
           {
             "name": "type",
             "in": "query",
-            "description": "交易类型\n\n 可用选项 \n - Deposit : 充币\n - Withdraw : 提币\n\n **传空字符串则返回所有交易**",
+            "description": "交易类型\n\n 可用选项 \n - Deposit : 充币\n - Withdrawal : 提币\n\n **传空字符串则返回所有交易**",
             "required": false,
             "schema": {
               "type": "string"
@@ -2110,10 +2110,59 @@
           {
             "name": "status",
             "in": "query",
-            "description": "当前提币状态\n\n 可用选项 \n - Processing : 待确认 \n - Approved : 审核通过 \n - Rejected : 审核被拒绝 \n - Cancelled : 已取消 \n - Completed : 已完成 \n - Failed : 失败",
+            "description": "当前交易状态\n\n 可用选项(充值) \n - Confirming : 确认中 \n - Rejected : 被拒绝 \n - Completed : 已完成 \n - Failed : 失败 \n\n 可用选项(提币) \n - Processing : 待确认 \n - Approved : 审核通过 \n - Cancelled : 已取消 \n - Rejected : 被拒绝 \n - Signed : 已签名 \n - Pending : 已广播 \n - Confirming : 确认中 \n - Completed : 已完成 \n - Failed : 失败",
             "required": false,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "hash",
+            "in": "query",
+            "description": "链上的哈希",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chain_id",
+            "in": "query",
+            "description": "交易所在的链",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "BASE_ETH"
+            }
+          },
+          {
+            "name": "token_id",
+            "in": "query",
+            "description": "交易的币种",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "BASE_USDT"
+            }
+          },
+          {
+            "name": "min_created",
+            "in": "query",
+            "description": "筛选创建时间大于或等于指定值的记录，值为秒数时间戳",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": "1770075000"
+            }
+          },
+          {
+            "name": "max_created",
+            "in": "query",
+            "description": "筛选创建时间小于或等于指定值的记录，值为秒数时间戳",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": "1770875000"
             }
           },
           {
@@ -2207,7 +2256,7 @@
     },
     "/nps/tx": {
       "get": {
-        "description": "获取单笔提币交易详情",
+        "description": "获取交易详情",
         "security": [
           {
             "BizApiKey": [],
@@ -2219,8 +2268,8 @@
           {
             "name": "transaction_id",
             "in": "query",
-            "description": "交易id",
             "required": false,
+            "description": "交易id。注意：transaction_id 与 request_id 二选一，至少提供一个；若同时提供，优先匹配 transaction_id。",
             "schema": {
               "type": "string",
               "example": "b02dc125-cf75-4487-a5b4-b350ced7e78c"
@@ -2229,8 +2278,8 @@
           {
             "name": "request_id",
             "in": "query",
-            "description": "请求id",
             "required": false,
+            "description": "请求id。注意：transaction_id 与 request_id 二选一，至少提供一个。",
             "schema": {
               "type": "string",
               "example": "d8551182-0aee-4346-929e-05c99081352a"

@@ -2,22 +2,58 @@
 title: '提现回调'
 ---
 
+## 支持的事件类型（webhookResult.type字段）
+
+- **wallets.transaction.updated** - 交易事件更新
+- **wallets.transaction.succeeded** - 交易成功
+- **wallets.transaction.failed** - 交易失败
+
+## 交易状态说明（webhookResult.data.status字段）
+
+- **Processing** - 待确认
+- **Approved** - 审核通过
+- **Cancelled** - 已取消
+- **Rejected** - 被拒绝
+- **Signed** - 已签名
+- **Pending** - 已广播
+- **Confirming** - 确认中
+- **Completed** - 已完成
+- **Failed** - 失败
+
 ## 字段说明 (提现时，webhook收到的内容)
 
 ``` json
 {
-    "request_id": "7d7aef02-07c8-4ebd-830e-97282766d3b6",     // 请求id
-    "wallet_id": "e9167870-e18b-4e82-8b87-92ec7ede8e45",      // 钱包id
-    "transaction_id": "b02dc125-cf75-4487-a5b4-b350ced7e78c", // 交易id
-    "hash": "",                                               // 交易hash
-    "type": "Withdrawal",                                     // 交易类型
-    "to": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46",       // 提现接收方的地址
-    "chain_id": "BASE_ETH",                                   // 提现的链
-    "token_id": "BASE_USDT",                                  // 提现币种的唯一标识
-    "amount": 1.19,                                           // 提现数量
-    "confirmed_num": 0,                                       // 确认数
-    "status": "Processing",                                   // 提现状态
-    "create_at": 1761036574369,                               // 创建时间
-    "update_at": 1761036574369                                // 更新时间
+  "event_id": "b29e3009-4fa6-4b42-ab34-1bd677c7c582",
+  "url": "https://apidev.nusd.me/nps/webhook",
+  "created_timestamp": 1770805834561,
+  "type": "wallets.transaction.updated", // webhook事件类型
+  "data": {
+    "request_id": "5bf4fa74-27f7-44e0-954c-86806aa258b6",
+    "transaction_id": "d213f737-d508-420e-a381-592bbbf49868",
+    "wallet_id": "332cf3e4-af07-46f9-a3da-4aa2cbe3bdd4",
+    "type": "Withdrawal", // 提现事件
+    "status": "Confirming", // 交易状态
+    "source": { // 提现来源
+      "type": "WithdrawalFromAddress",
+      "address": "0xF3f42F3d87ac8687B845146Ec38AA9672D9669ab"
+    },
+    "destination": { // 提现目标
+      "type": "WithdrawalToAddress",
+      "address": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46",
+      "amount": "0.003",
+      "memo": ""
+    },
+    "created_timestamp": 1770805233354,
+    "updated_timestamp": 1770805834561,
+    "chain_id": "BASE_ETH", // 所属链
+    "token_id": "BASE_USDT", // 提现币种
+    "transaction_hash": "0x8cde9a2b0794517f4dce49eabf6ce37f049b981630649c03d041ba269886713b", // 交易哈希
+    "confirmed_num": 10,
+    "block_info": {
+      "block_number": 380918273,
+      "block_hash": "0x8cde9a2b0794517f4dce49eabf6ce37f049b981630649c03d041ba269886713b"
+    }
+  }
 }
 ```
