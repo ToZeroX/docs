@@ -16,7 +16,13 @@
       "display": "interactive"
     },
     "examples": {
-      "languages": ["curl", "python", "javascript", "go", "java"],
+      "languages": [
+        "curl",
+        "python",
+        "javascript",
+        "go",
+        "java"
+      ],
       "defaults": "required",
       "prefill": true
     }
@@ -227,8 +233,6 @@
     "light": "/logo/light.png",
     "dark": "/logo/dark.png"
   },
-  "navbar": {
-  },
-  "footer": {
-  }
+  "navbar": {},
+  "footer": {}
 }
