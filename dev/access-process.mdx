@@ -14,7 +14,7 @@ description: "5 步完成 NUSDpay API 接入，开始处理您的第一笔交易
     2. 我们将为您创建钱包、绑定项目信息并分配管理员权限
     3. 完成后，您将收到专属的 `wallet_id`
 
-    详细说明请参阅 [Wallet ID 申请与配置指南](/pages/domains#wallet-id-申请与配置指南)。
+    详细说明请参阅 [Wallet ID 申请与配置指南](/dev/domains#wallet-id-申请与配置指南)。
   </Step>
 
   <Step title="生成 API 密钥">
@@ -23,15 +23,15 @@ description: "5 步完成 NUSDpay API 接入，开始处理您的第一笔交易
     1. 按照指引生成 Ed25519 密钥对（公钥作为 `API_KEY`，私钥作为 `API_SECRET`）
     2. 将公钥提供给我们进行绑定
 
-    密钥生成方法请参阅 [生成公钥和私钥](/pages/domains#生成-公钥和私钥)。
+    密钥生成方法请参阅 [生成公钥和私钥](/dev/domains#生成-公钥和私钥)。
   </Step>
 
   <Step title="平台配置">
     根据业务需求，确认以下配置项：
 
-    **链与币种** — 选择需要开通的链及币种，详见 [支持的币种与公链](/pages/chain)。
+    **链与币种** — 选择需要开通的链及币种，详见 [支持的币种与公链](/dev/chain)。
 
-    **Webhook 回调** — 提供回调 URL 以实时接收交易状态更新，详见 [Webhook 介绍](/pages/webhook)。
+    **Webhook 回调** — 提供回调 URL 以实时接收交易状态更新，详见 [Webhook 介绍](/dev/webhook)。
 
     **Payout 配置** — 如需使用付款功能，确认已开通对应链的 Payout 权限。
 
@@ -44,16 +44,16 @@ description: "5 步完成 NUSDpay API 接入，开始处理您的第一笔交易
     开始调用接口前，请阅读以下说明：
 
     <CardGroup cols={2}>
-      <Card title="请求说明" icon="file-code" href="/pages/request">
+      <Card title="请求说明" icon="file-code" href="/dev/request">
         请求头与身份验证
       </Card>
-      <Card title="API 签名" icon="key" href="/pages/encrypt">
+      <Card title="API 签名" icon="key" href="/dev/encrypt">
         签名计算方式
       </Card>
-      <Card title="交易状态" icon="list-check" href="/pages/status">
+      <Card title="交易状态" icon="list-check" href="/dev/status">
         各状态含义与流转
       </Card>
-      <Card title="错误码" icon="circle-exclamation" href="/pages/error-code">
+      <Card title="错误码" icon="circle-exclamation" href="/dev/error-code">
         错误码与排查指南
       </Card>
     </CardGroup>
@@ -70,7 +70,7 @@ description: "5 步完成 NUSDpay API 接入，开始处理您的第一笔交易
     主要接口：
     - [获取充值地址](/api-reference/endpoint/address) — 为终端用户生成专属收款地址
     - [查询钱包余额](/api-reference/endpoint/balance) — 查询当前 NUSD 余额
-    - [充值回调](/pages/webhook-deposit) — 接收入账通知
+    - [充值回调](/dev/webhook-deposit) — 接收入账通知
 
     ### Payout（付款）
 
@@ -78,11 +78,11 @@ description: "5 步完成 NUSDpay API 接入，开始处理您的第一笔交易
     - [查询平台费用](/api-reference/endpoint/fees) — 查询当前费率配置
     - [发起提币](/api-reference/endpoint/withdraw) — 向终端用户钱包地址发起付款
     - [查询提币记录](/api-reference/endpoint/withdrawList) — 查询付款状态
-    - [提现回调](/pages/webhook-withdraw) — 接收付款结果通知
+    - [提现回调](/dev/webhook-withdraw) — 接收付款结果通知
 
     ### Checkout 收银台（可选）
 
-    如需为终端用户提供现成的支付页面，可集成 Checkout H5 页面。详见 [集成 H5 页面](/pages/checkout)。
+    如需为终端用户提供现成的支付页面，可集成 Checkout H5 页面。详见 [集成 H5 页面](/dev/checkout)。
 
     <Info>
       如您仅通过 API 进行钱包管理和资产操作，无需集成 Checkout，可跳过此部分。
@@ -96,7 +96,7 @@ description: "5 步完成 NUSDpay API 接入，开始处理您的第一笔交易
   <Card title="产品介绍" icon="book" href="/guides/introduction">
     了解 NUSDpay 的完整产品能力。
   </Card>
-  <Card title="沙箱测试" icon="flask" href="/pages/sandbox">
+  <Card title="沙箱测试" icon="flask" href="/dev/sandbox">
     在测试环境中验证接入。
   </Card>
 </CardGroup>

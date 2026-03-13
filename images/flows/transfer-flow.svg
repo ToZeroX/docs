@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="280" viewBox="0 0 720 280">
+  <rect width="720" height="280" fill="#ffffff" rx="12" />
+  <style>
+        .node { rx: 8; ry: 8; }
+        .node-active { fill: #E8F5E9; stroke: #16A34A; stroke-width: 2; }
+        .node-success { fill: #E3F2FD; stroke: #1976D2; stroke-width: 2; }
+        .node-cancel { fill: #FFF3E0; stroke: #F57C00; stroke-width: 2; }
+        .node-reject { fill: #FFEBEE; stroke: #D32F2F; stroke-width: 2; }
+        .node-done { fill: #E8F5E9; stroke: #2E7D32; stroke-width: 2; }
+        .label { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 14px; fill: #333; text-anchor: middle; dominant-baseline: central; }
+        .edge-label { font-family: -apple-system, "PingFang SC", sans-serif; font-size: 12px; fill: #666; text-anchor: middle; dominant-baseline: central; }
+        .arrow { fill: none; stroke: #999; stroke-width: 2; marker-end: url(#arrowhead); }
+        .arrow-cancel { fill: none; stroke: #F57C00; stroke-width: 2; marker-end: url(#arrowhead-orange); }
+        .arrow-reject { fill: none; stroke: #D32F2F; stroke-width: 2; marker-end: url(#arrowhead-red); }
+    </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#999" />
+    </marker>
+    <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#F57C00" />
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#D32F2F" />
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16A34A" />
+    </marker>
+  </defs>
+  <rect x="40" y="40" width="120" height="44" class="node node-active" />
+  <text x="100.0" y="62.0" class="label">待确认</text>
+  <rect x="280" y="40" width="120" height="44" class="node node-success" />
+  <text x="340.0" y="62.0" class="label">审核通过</text>
+  <rect x="520" y="40" width="120" height="44" class="node node-done" />
+  <text x="580.0" y="62.0" class="label">已完成</text>
+  <line x1="160" y1="62" x2="278" y2="62" class="arrow" />
+  <text x="220" y="52" class="edge-label">超管审核</text>
+  <line x1="400" y1="62" x2="518" y2="62" class="arrow" />
+  <text x="460" y="52" class="edge-label">系统处理</text>
+  <rect x="280" y="130" width="120" height="44" class="node node-cancel" />
+  <text x="340.0" y="152.0" class="label">已取消</text>
+  <line x1="100" y1="84" x2="100" y2="152" class="arrow" />
+  <line x1="100" y1="152" x2="278" y2="152" class="arrow-cancel" />
+  <text x="190" y="142" class="edge-label">商户取消</text>
+  <rect x="280" y="220" width="120" height="44" class="node node-reject" />
+  <text x="340.0" y="242.0" class="label">已驳回</text>
+  <line x1="100" y1="152" x2="100" y2="242" class="arrow" />
+  <line x1="100" y1="242" x2="278" y2="242" class="arrow-reject" />
+  <text x="190" y="232" class="edge-label">超管驳回</text>
+</svg>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="200" viewBox="0 0 700 200" font-family="-apple-system, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif">
+  <rect width="700" height="200" fill="#fff" rx="8" />
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#94A3B8" />
+    </marker>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16A34A" />
+    </marker>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#DC2626" />
+    </marker>
+  </defs>
+  <rect x="40" y="80" width="100" height="36" rx="8" fill="#F0F9FF" stroke="#3B82F6" stroke-width="1.5" />
+  <text x="90.0" y="98.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">Reviewing</text>
+  <rect x="190" y="80" width="100" height="36" rx="8" fill="#FFF7ED" stroke="#EA580C" stroke-width="1.5" />
+  <text x="240.0" y="98.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">Pending</text>
+  <rect x="340" y="80" width="110" height="36" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5" />
+  <text x="395.0" y="98.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">Confirming</text>
+  <rect x="510" y="80" width="110" height="36" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" />
+  <text x="565.0" y="98.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">Completed ✅</text>
+  <rect x="340" y="155" width="110" height="36" rx="8" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.5" />
+  <text x="395.0" y="173.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">Failed ❌</text>
+  <line x1="140" y1="98" x2="188" y2="98" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <text x="165" y="88" text-anchor="middle" font-size="10" fill="#64748B">发起</text>
+  <line x1="290" y1="98" x2="338" y2="98" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <text x="315" y="88" text-anchor="middle" font-size="10" fill="#64748B">进入队列</text>
+  <line x1="450" y1="98" x2="508" y2="98" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <text x="480" y="88" text-anchor="middle" font-size="10" fill="#64748B">链上确认</text>
+  <line x1="290" y1="116" x2="338" y2="155" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <text x="300" y="140" text-anchor="middle" font-size="10" fill="#64748B">审核失败</text>
+  <line x1="450" y1="116" x2="395" y2="153" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <text x="440" y="140" text-anchor="middle" font-size="10" fill="#64748B">链上失败</text>
+</svg>

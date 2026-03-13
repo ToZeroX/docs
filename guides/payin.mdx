@@ -1,0 +1,117 @@
+---
+title: "Payin 收款方案"
+description: "了解 NUSDpay Payin 的完整收款流程、资金入账规则和 Webhook 通知机制。"
+---
+
+
+Payin（收款/收单）是商户通过 NUSDpay 接收终端用户加密货币付款的能力。商户集成 Payin API 后，NUSDpay 为商户生成专属收款地址，商户将地址提供给终端用户。用户付款后，资金经汇率换算以 NUSD 入账到商户钱包。
+
+## 业务流程
+
+### 时序图
+<Frame caption="Payin 收款时序（点击放大）">
+  <img src="/images/flows/payin-sequence.svg" alt="Payin 收款时序" />
+</Frame>
+
+### 操作步骤
+
+<Steps>
+  <Step title="获取收款地址">
+    商户调用 [获取充值地址](/api-reference/endpoint/address) 接口，获取专属收款地址。同一商户在同一链上的收款地址固定不变。
+  </Step>
+
+  <Step title="展示给终端用户">
+    商户在自己的支付页面展示收款地址和金额（或集成 [Checkout 收银台](/dev/checkout) 提供现成的 H5 支付页面）。
+  </Step>
+
+  <Step title="终端用户付款">
+    终端用户通过自己的钱包向该地址转入 USDT、USDC 等支持的代币。
+  </Step>
+
+  <Step title="自动入账">
+    NUSDpay 系统检测到链上交易后，等待足够的区块确认，经汇率换算后以 NUSD 入账到商户钱包。
+
+    入账金额计算：
+    ```
+    实际到账(NUSD) = 充值金额(USDT/USDC) × 汇率 - 服务费
+    ```
+  </Step>
+
+  <Step title="Webhook 通知">
+    入账完成后，系统向商户推送 [充值回调](/dev/webhook-deposit) 事件，包含交易哈希、金额、币种等完整信息。
+  </Step>
+</Steps>
+
+## 入账规则
+
+### 支持的代币
+
+通过 [获取支持的代币列表](/api-reference/endpoint/tokens) 查询当前支持的充值币种。主要支持：
+
+- **USDT**：Ethereum、Tron、Arbitrum、Polygon、BSC、Base
+- **USDC**：Ethereum、Arbitrum、Polygon、BSC、Base
+
+### 计价与换算
+
+终端用户充入的 USDT、USDC 等代币，统一换算为 NUSD 计价入账到商户钱包：
+
+```
+实际到账(NUSD) = 充值金额(USDT/USDC) × 汇率 - 服务费
+```
+
+| 参数 | 说明 |
+|------|------|
+| 充值金额 | 终端用户链上转账的原始金额 |
+| 汇率 | 充值代币对 NUSD 的实时汇率 |
+| 服务费 | 按项目配置的 Payin 费率计算 |
+
+<Info>
+  每笔交易的实际汇率和服务费在充值记录中可查，也会通过 Webhook 回调返回。
+</Info>
+
+### 确认时间
+
+不同链的区块确认时间不同：
+
+| 链 | 预估确认时间 | 说明 |
+|---|---|---|
+| Ethereum | ~2 分钟 | 需等待足够区块确认 |
+| Tron | ~1 分钟 | |
+| Arbitrum / Polygon / BSC / Base | ~30 秒 | L2 链确认较快 |
+
+### 充值状态
+
+| 状态 | 说明 |
+|------|------|
+| Pending | 交易已检测到，等待区块确认 |
+| Confirming | 正在等待链上确认 |
+| Completed | 确认完成，已入账 |
+| Failed | 处理失败 |
+
+## 异常情况
+
+### 充错币种
+
+如果终端用户向收款地址发送了不支持的代币（如平台仅支持 USDT，但用户转了 ETH），该笔充值不会自动入账。商户可通过管理后台的 **工单系统** 提交误充退款申请。
+
+### 小额充值
+
+极小金额的充值（如几分钱）会正常入账。如需过滤小额充值，可在业务层自行处理。
+
+### 充值未到账
+
+如果终端用户已发起转账但商户未收到 Webhook 通知：
+1. 确认交易是否已上链（通过区块链浏览器查询）
+2. 确认 Webhook 端点是否正常响应
+3. 调用 [查询充值记录](/api-reference/endpoint/getDepositList) 接口主动查询
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="Payout 付款方案" icon="arrow-up-from-line" href="/guides/payout">
+    了解如何向外部地址发起付款。
+  </Card>
+  <Card title="Webhook 配置" icon="bell" href="/dev/webhook">
+    配置 Webhook 接收交易通知。
+  </Card>
+</CardGroup>

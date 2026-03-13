@@ -1,0 +1,37 @@
+---
+title: 'base64说明'
+---
+
+## 注意事项
+
+请求参数data与响应字段data的值都是经过rsa加密后再通过 base64UrlSafe 加密的结果
+
+<Note>
+  base64传统编码中会出现+, /两个会被url直接转义的符号，因此如果希望通过url传输这些编码字符串，我们需要先做传统base64编码，随后将+和/分别替换为- _两个字符，在接收端则做相反的动作解码
+</Note>
+
+
+### toBase64UrlSafe
+
+从base64编码转换成base64UrlSafe
+
+``` javascript
+  function toBase64UrlSafe(b64) {
+    b64 = Buffer.isBuffer(b64) ? b64.toString('base64') : b64;
+    return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+  }
+```
+
+### formBase64UrlSafe
+
+从base64UrlSafe编码转换成base64
+
+``` javascript
+  function fromBase64UrlSafe(b64url) {
+    b64url = Buffer.isBuffer(b64url) ? b64url.toString('base64') : b64url;
+    let b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64.length % 4;
+    if (pad) b64 += '='.repeat(4 - pad);
+    return b64;
+  }
+```

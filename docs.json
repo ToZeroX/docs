@@ -1,7 +1,10 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "NUSD",
+  "appearance": {
+    "default": "light"
+  },
+  "name": "NUSDpay",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -21,62 +24,198 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "API接口",
+        "tab": "产品介绍",
+        "url": "guides",
         "groups": [
           {
-            "group": "统一说明",
+            "group": "首页",
             "pages": [
-              "index",
-              "pages/domains",
-              "pages/request",
-              "pages/encrypt",
-              "pages/status",
-              "pages/chain"
+              "guides/overview"
             ]
           },
           {
-            "group": "公共接口",
+            "group": "了解 NUSDpay",
+            "pages": [
+              "guides/introduction",
+              "guides/pricing",
+              "guides/compliance"
+            ]
+          },
+          {
+            "group": "业务方案",
+            "pages": [
+              "guides/payin",
+              "guides/payout",
+              "guides/settlement",
+              "guides/transfer"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "开发接入",
+        "url": "dev",
+        "groups": [
+          {
+            "group": "快速开始",
+            "pages": [
+              "dev/access-process",
+              "dev/domains",
+              "dev/sandbox"
+            ]
+          },
+          {
+            "group": "接入规范",
+            "pages": [
+              "dev/request",
+              "dev/encrypt"
+            ]
+          },
+          {
+            "group": "交易与通知",
+            "pages": [
+              "dev/status",
+              "dev/webhook",
+              "dev/webhook-deposit",
+              "dev/webhook-withdraw"
+            ]
+          },
+          {
+            "group": "更多集成",
+            "pages": [
+              "dev/checkout"
+            ]
+          },
+          {
+            "group": "参考",
+            "pages": [
+              "dev/chain",
+              "dev/error-code"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "运营指南",
+        "url": "ops",
+        "groups": [
+          {
+            "group": "概览",
+            "pages": [
+              "ops/overview"
+            ]
+          },
+          {
+            "group": "数据分析",
+            "pages": [
+              "ops/data-dashboard"
+            ]
+          },
+          {
+            "group": "交易管理",
+            "pages": [
+              "ops/transaction",
+              "ops/payout-history"
+            ]
+          },
+          {
+            "group": "资金操作",
+            "pages": [
+              "ops/settlement",
+              "ops/bank",
+              "ops/transfer",
+              "ops/transform"
+            ]
+          },
+          {
+            "group": "对账与报表",
+            "pages": [
+              "ops/verification",
+              "ops/report",
+              "ops/reconciliation"
+            ]
+          },
+          {
+            "group": "地址与汇率",
+            "pages": [
+              "ops/address",
+              "ops/kline"
+            ]
+          },
+          {
+            "group": "运维工具",
+            "pages": [
+              "ops/cex-withdraw",
+              "ops/chain-data"
+            ]
+          },
+          {
+            "group": "工单系统",
+            "pages": [
+              "ops/tickets"
+            ]
+          },
+          {
+            "group": "系统配置",
+            "pages": [
+              "ops/apps",
+              "ops/fee",
+              "ops/wallet",
+              "ops/chain",
+              "ops/token"
+            ]
+          },
+          {
+            "group": "权限管理",
+            "pages": [
+              "ops/admin",
+              "ops/permission",
+              "ops/role"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API 接口",
+        "url": "api-reference",
+        "groups": [
+          {
+            "group": "基础配置",
             "pages": [
               "api-reference/endpoint/chains",
               "api-reference/endpoint/tokens",
-              "api-reference/endpoint/addressVerify"
+              "api-reference/endpoint/addressVerify",
+              "api-reference/endpoint/balance",
+              "api-reference/endpoint/fees"
             ]
           },
           {
-            "group": "钱包接口",
+            "group": "Payin（收款）",
             "pages": [
               "api-reference/endpoint/address",
-              "api-reference/endpoint/balance"
-            ]
-          },
-          {
-            "group": "交易接口",
-            "pages": [
-              "api-reference/endpoint/fees",
-              "api-reference/endpoint/withdraw",
-              "api-reference/endpoint/withdrawList",
-              "api-reference/endpoint/withdrawDetail"
-            ]
-          },
-          {
-            "group": "Checkout 集成",
-            "pages": [
               "api-reference/endpoint/createAddress",
-              "pages/checkout"
+              "api-reference/endpoint/getDepositList",
+              "api-reference/endpoint/getDepositAllList"
             ]
           },
           {
-            "group": "Webhook",
+            "group": "Payout（付款）",
             "pages": [
-              "pages/webhook",
-              "pages/webhook-deposit",
-              "pages/webhook-withdraw"
+              "api-reference/endpoint/withdraw",
+              "api-reference/endpoint/withdrawDetail",
+              "api-reference/endpoint/withdrawList"
             ]
           },
           {
-            "group": "错误码",
+            "group": "通用查询",
             "pages": [
-              "pages/error-code"
+              "api-reference/endpoint/getTransactions"
+            ]
+          },
+          {
+            "group": "Webhook 事件",
+            "pages": [
+              "api-reference/endpoint/webhook-deposit"
             ]
           }
         ]

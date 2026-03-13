@@ -1,0 +1,138 @@
+---
+title: "合规与安全"
+description: "了解 NUSDpay 平台的 AML/CFT 合规体系、交易风控和安全机制。"
+---
+
+
+NUSDpay 平台内置完善的合规与安全体系，确保商户的每一笔交易符合反洗钱（AML）和反恐融资（CFT）监管要求。
+
+## 合规架构
+
+NUSDpay 内置专业合规引擎，提供自动化的交易监控和风险评估能力。
+<Frame caption="风控审核流程（点击放大）">
+  <img src="/images/flows/compliance-flow.svg" alt="风控审核流程" />
+</Frame>
+
+## KYA — 了解你的地址
+
+**Know Your Address (KYA)** 技术对交易涉及的区块链地址进行风险评估：
+
+- **地址画像**：识别地址所属类型（交易所、混币器、暗网、制裁名单等）
+- **风险评分**：基于地址历史行为生成风险分数
+- **实时筛查**：每笔 Payin/Payout 交易的目标地址自动筛查
+
+## KYT — 了解你的交易
+
+**Know Your Transaction (KYT)** 技术对每笔交易进行实时监控：
+
+- **交易筛查**：自动分析交易金额、频率、对手方等维度
+- **风险评级**：High Risk / Medium Risk / Low Risk 三级分类
+- **后处理策略**：根据风险等级触发自动放行、人工审核或拦截
+
+## 筛查流程
+
+### Payin（收款）筛查
+
+终端用户的每笔充值，系统自动执行：
+
+<Steps>
+  <Step title="链上交易检测">
+    NUSDpay 检测到充值交易后，提取发送方地址和交易信息。
+  </Step>
+  <Step title="KYA 地址筛查">
+    对发送方地址进行风险画像分析，检查是否关联制裁名单、混币器等高风险实体。
+  </Step>
+  <Step title="KYT 交易筛查">
+    分析交易金额、频率、链路等维度，生成风险评级。
+  </Step>
+  <Step title="风险处置">
+    - **Low Risk**：自动入账
+    - **Medium Risk**：进入人工审核队列
+    - **High Risk**：自动冻结，等待合规团队处理
+  </Step>
+</Steps>
+
+### Payout（付款）筛查
+
+商户发起的每笔付款，系统自动执行：
+
+- 收款地址的 KYA 筛查（地址白名单 + 风险画像）
+- 交易金额和频率的 KYT 分析
+- 触发风控规则时，交易进入审核状态（Webhook 通知 Sub-Status: `PendingAML/KYCReview`）
+
+### 筛查结果
+
+| 状态 | 说明 |
+|------|------|
+| Passed | 筛查通过，交易正常处理 |
+| Pending Screening | 等待筛查完成 |
+| Screened | 筛查完成，等待后处理 |
+| Manual Review | 需要人工审核 |
+| Rejected | 筛查不通过，交易拒绝 |
+
+## Post-Screening 策略
+
+NUSDpay 支持配置后处理策略（Post-Screening Policies），根据风险评级自动执行对应操作：
+
+| 风险等级 | 默认策略 | 可配置操作 |
+|---------|---------|-----------|
+| Low Risk | 自动放行 | Approve / Alert / Reject |
+| Medium Risk | 人工审核 | Approve with Alert / Manual Review / Reject |
+| High Risk | 自动拦截 | Reject / Freeze |
+
+<Info>
+  Post-Screening 策略可在管理后台的风控模块中自定义配置。
+</Info>
+
+## API 安全
+
+### 请求签名
+
+所有 API 请求使用 **Ed25519 签名** + **Nonce 防重放**机制：
+
+- 每次请求携带唯一 Nonce（时间戳）
+- 请求体使用 Ed25519 私钥签名
+- 服务端验签 + Nonce 时效校验，防止重放攻击
+
+详细签名算法请参阅 [签名说明](/dev/encrypt)。
+
+### Webhook 安全
+
+NUSDpay 推送的 Webhook 通知同样经过签名保护：
+
+- 每条 Webhook 携带签名头，商户可验签确认消息来源
+- 建议在 2 秒内响应，超时系统自动重试
+- 使用 `request_id` 做幂等处理，防止重复消费
+
+详细说明请参阅 [Webhook 配置](/dev/webhook)。
+
+### 安全最佳实践
+
+<AccordionGroup>
+  <Accordion title="密钥管理">
+    - 私钥仅在服务端使用，禁止硬编码在前端代码中
+    - 定期轮换 API 密钥
+    - 使用环境变量或密钥管理服务存储密钥
+  </Accordion>
+  <Accordion title="网络安全">
+    - 所有 API 通信强制使用 HTTPS
+    - 建议配置 IP 白名单，限制 API 调用来源
+    - Webhook 端点建议配置 HTTPS + 验签
+  </Accordion>
+  <Accordion title="权限控制">
+    - 遵循最小权限原则，按角色分配后台权限
+    - 敏感操作（结算、划转）需验证码二次确认
+    - 定期审计操作日志
+  </Accordion>
+</AccordionGroup>
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="交易状态说明" icon="list-check" href="/dev/status">
+    了解各状态和子状态的含义，包括 AML 审核相关状态。
+  </Card>
+  <Card title="Webhook 配置" icon="bell" href="/dev/webhook">
+    配置 Webhook 接收交易和合规审核通知。
+  </Card>
+</CardGroup>

@@ -1,0 +1,101 @@
+---
+title: "沙箱测试指南"
+description: "在测试环境中完成接入验证，确保上线万无一失。"
+---
+
+
+NUSDpay 提供独立的测试环境（沙箱），供商户在正式上线前完成接入验证。测试环境与生产环境完全隔离，不涉及真实资金。
+
+## 环境信息
+
+| 项目 | 测试环境 | 生产环境 |
+|------|---------|---------|
+| API 域名 | `https://apidev.nusd.me` | `https://api.nusd.me` |
+| 管理后台 | 联系技术支持获取 | 联系技术支持获取 |
+
+<Warning>
+  测试环境和生产环境使用不同的 API 密钥和 wallet_id，请勿混用。
+</Warning>
+
+## 测试流程
+
+<Steps>
+  <Step title="获取测试凭证">
+    联系技术支持获取测试环境的 `wallet_id` 和 API 密钥配置。
+
+    邮箱：support@nusd.me
+  </Step>
+
+  <Step title="验证签名">
+    使用测试密钥调用任意接口，验证签名流程是否正确。
+
+    建议先调用 [获取支持的链列表](/api-reference/endpoint/chains) 接口测试：
+
+    ```bash
+    curl --request GET \
+      --url https://apidev.nusd.me/nps/chains \
+      --header 'BIZ-API-KEY: <your-test-api-key>' \
+      --header 'Biz-Api-Nonce: <nonce>' \
+      --header 'Biz-Api-Signature: <signature>'
+    ```
+  </Step>
+
+  <Step title="测试 Payin 流程">
+    1. 调用 [获取充值地址](/api-reference/endpoint/address) 获取测试地址
+    2. 使用测试网代币向该地址转账
+    3. 等待 Webhook 回调确认入账
+    4. 调用 [查询充值记录](/api-reference/endpoint/getDepositList) 验证数据
+  </Step>
+
+  <Step title="测试 Payout 流程">
+    1. 确认测试钱包有足够余额
+    2. 调用 [发起提币](/api-reference/endpoint/withdraw) 发起测试付款
+    3. 等待 Webhook 回调确认完成
+    4. 调用 [查询提币记录](/api-reference/endpoint/withdrawList) 验证数据
+  </Step>
+
+  <Step title="测试 Webhook">
+    1. 配置测试环境的 Webhook 回调地址
+    2. 验证签名校验逻辑
+    3. 确认响应状态码为 200 或 201
+    4. 测试超时和重试场景
+  </Step>
+</Steps>
+
+## 上线检查清单
+
+在切换到生产环境前，请确认以下事项：
+
+<Check>API 签名验证通过</Check>
+<Check>Webhook 回调地址已配置</Check>
+<Check>Webhook 签名验证逻辑已实现</Check>
+<Check>Webhook 幂等处理已实现（基于 request_id 去重）</Check>
+<Check>交易状态轮询兜底已实现</Check>
+<Check>异常状态（Failed）的处理逻辑已完成</Check>
+<Check>生产环境的 API 密钥和 wallet_id 已更换</Check>
+<Check>API 域名已切换为 api.nusd.me</Check>
+
+## 常见问题
+
+<AccordionGroup>
+  <Accordion title="测试环境是否有调用频率限制？">
+    测试环境的频率限制与生产环境一致。建议在测试时模拟真实的调用频率。
+  </Accordion>
+  <Accordion title="测试环境的交易是否会上链？">
+    测试环境使用测试网络，交易会真实上链到测试网，但不涉及真实资金。
+  </Accordion>
+  <Accordion title="如何获取测试网代币？">
+    请联系技术支持，我们会为您的测试钱包充入测试代币。
+  </Accordion>
+</AccordionGroup>
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="API 签名" icon="key" href="/dev/encrypt">
+    了解签名计算方式。
+  </Card>
+  <Card title="Webhook 配置" icon="bell" href="/dev/webhook">
+    配置 Webhook 接收交易通知。
+  </Card>
+</CardGroup>

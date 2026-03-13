@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="340" viewBox="0 0 500 340" font-family="-apple-system, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif">
+  <rect width="500" height="340" fill="#fff" rx="8" />
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#94A3B8" />
+    </marker>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16A34A" />
+    </marker>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#DC2626" />
+    </marker>
+  </defs>
+  <rect x="170" y="10" width="160" height="36" rx="8" fill="#F0F9FF" stroke="#3B82F6" stroke-width="1.5" />
+  <text x="250.0" y="28.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">终端用户请求支付</text>
+  <rect x="170" y="70" width="160" height="36" rx="8" fill="#FFF7ED" stroke="#EA580C" stroke-width="1.5" />
+  <text x="250.0" y="88.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">是否已有收款地址？</text>
+  <rect x="30" y="140" width="140" height="36" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" />
+  <text x="100.0" y="158.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">展示收款地址/二维码</text>
+  <rect x="310" y="140" width="160" height="36" rx="8" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.5" />
+  <text x="390.0" y="158.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">调用API获取地址</text>
+  <rect x="170" y="200" width="160" height="36" rx="8" fill="#F0F9FF" stroke="#3B82F6" stroke-width="1.5" />
+  <text x="250.0" y="218.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">用户扫码/转账</text>
+  <rect x="170" y="260" width="160" height="36" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5" />
+  <text x="250.0" y="278.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">Webhook充值回调</text>
+  <rect x="170" y="310" width="160" height="30" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5" />
+  <text x="250.0" y="325.0" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#333" font-weight="500">匹配用户,处理业务</text>
+  <line x1="250" y1="46" x2="250" y2="68" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <line x1="170" y1="88" x2="100" y2="138" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <text x="120" y="108" text-anchor="middle" font-size="10" fill="#64748B">是</text>
+  <line x1="330" y1="88" x2="390" y2="138" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <text x="375" y="108" text-anchor="middle" font-size="10" fill="#64748B">否</text>
+  <line x1="310" y1="158" x2="170" y2="158" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <line x1="100" y1="176" x2="250" y2="198" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <line x1="250" y1="236" x2="250" y2="258" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+  <line x1="250" y1="296" x2="250" y2="308" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#ah)" />
+</svg>

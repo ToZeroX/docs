@@ -51,7 +51,7 @@ description: "Payout 付款事件的 Webhook Payload 字段说明。"
 | `Processing` | 处理中（审核或排队） |
 | `Confirming` | 已广播上链，等待区块确认 |
 | `Completed` | 付款成功，终端用户已到账 |
-| `Failed` | 付款失败（具体原因参阅 [交易状态说明](/pages/status)） |
+| `Failed` | 付款失败（具体原因参阅 [交易状态说明](/dev/status)） |
 
 <Tip>
   请使用 `request_id` 做幂等处理。同一笔付款在状态变更时会多次触发 Webhook。

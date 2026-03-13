@@ -1,0 +1,115 @@
+---
+title: "产品介绍"
+description: "NUSDpay 是一站式加密货币支付平台，为企业提供从收款到付款的完整资金链路。NUSD 是 NUSDpay 平台的美元稳定币。"
+---
+
+NUSDpay 为企业提供安全、合规、高效的加密货币支付基础设施。通过统一的 API 和管理后台，商户可以轻松实现加密货币的收款（Payin）、付款（Payout）和资金管理。
+
+**NUSD** 是 NUSDpay 平台的美元稳定币，作为平台内部的统一计价和结算单位。商户收到的各类加密货币（USDT、USDC 等）经汇率换算后，以 NUSD 计价入账到商户钱包。
+
+## 谁在使用 NUSDpay？
+
+NUSDpay 的用户是**商户（Merchant）**——即需要在业务中收付加密货币的企业。商户通过集成 NUSDpay 的 API，为自己的终端用户提供加密货币的收款和付款能力。
+
+```
+商户（您）  ←→  NUSDpay 平台  ←→  区块链网络  ←→  终端用户（您的客户）
+```
+
+## 核心能力
+
+<CardGroup cols={2}>
+  <Card title="收款（Payin）" icon="arrow-down-to-line">
+    商户集成 NUSDpay 收款 API，获取专属收款地址。终端用户向该地址付款后，资金经汇率换算以 NUSD 入账到商户钱包。支持多链多币种，实时 Webhook 通知。
+  </Card>
+  <Card title="付款（Payout）" icon="arrow-up-from-line">
+    商户集成 NUSDpay 付款 API，从 NUSD 钱包余额向终端用户的钱包地址发起链上转账（USDT/USDC）。支持灵活的手续费模式，内置风控审核。
+  </Card>
+  <Card title="结算（Settlement）" icon="building-columns">
+    商户将 NUSD 余额结算为 USD 法币，直接汇入绑定的银行账户。支持审核流程，汇率实时换算。
+  </Card>
+  <Card title="资金管理" icon="wallet">
+    实时余额查询、项目间资金划转（NUSD）、冻结/可用分离。管理后台提供完整的交易查询和数据看板。
+  </Card>
+</CardGroup>
+
+## 支持的链与币种
+
+NUSDpay 当前支持以下公链和代币：
+
+| 链 | 代币 | Payin | Payout | 预估确认时间 |
+|---|---|:---:|:---:|---|
+| Ethereum | USDT, USDC | ✅ | ✅ | ~2 分钟 |
+| Tron | USDT | ✅ | ❌ | ~1 分钟 |
+| Arbitrum | USDT, USDC | ✅ | ✅ | ~30 秒 |
+| Polygon | USDT, USDC | ✅ | ✅ | ~30 秒 |
+| BSC | USDT, USDC | ✅ | ✅ | ~30 秒 |
+| Base | USDT, USDC | ✅ | ✅ | ~30 秒 |
+
+<Info>
+  支持的链和币种持续扩展中。您也可以通过 [获取支持的链列表](/api-reference/endpoint/chains) 和 [获取支持的代币列表](/api-reference/endpoint/tokens) 接口查询最新信息。
+</Info>
+
+## 产品架构
+
+NUSDpay 的资金流转覆盖从收款到结算的完整链路：
+
+<Frame caption="NUSDpay 资金流转架构（点击放大）">
+  <img src="/images/flows/architecture-flow.svg" alt="NUSDpay 资金流转架构图" />
+</Frame>
+
+**资金入口（Payin）**：NUSDpay 为商户生成专属收款地址，商户将地址提供给终端用户。终端用户付款后，资金经汇率换算以 NUSD 入账到商户钱包。
+
+**资金管理（钱包系统）**：商户余额分为可用余额和冻结余额。可用余额可用于划转、Payout 或结算；发起操作时对应金额进入冻结状态。
+
+**资金出口 — Payout（链上付款）**：商户通过 API 从 NUSD 余额向终端用户的钱包地址发起链上转账（USDT/USDC）。
+
+**资金出口 — 结算（法币出金）**：商户将 NUSD 余额结算为 USD 法币，直接汇入商户绑定的银行账户。
+
+**资金调拨 — 划转**：商户在不同项目钱包之间调拨 NUSD，不涉及链上交易。
+
+## 管理后台
+
+NUSDpay 提供功能完善的管理后台，包括：
+
+- **数据看板**：收款趋势、支付 KPI、客户排行、币种分布等可视化报表
+- **交易管理**：充值记录、支付记录、划转记录的多维度查询与筛选
+- **余额管理**：实时余额总览、可用 / 冻结明细
+- **资金划转**：项目间资金调拨，支持审核流程
+- **结算管理**：NUSD → USD 法币结算，绑定银行账户，结算历史和审核流程
+- **数据看板**中包含结算概览（Payin 结算金额/笔数趋势）和 Payout 提现概览
+- **工单系统**：误充退款等异常情况的工单流转
+
+## 使用场景
+
+<AccordionGroup>
+  <Accordion title="跨境电商收单">
+    电商平台集成 NUSDpay Payin API，在结账页面向买家展示加密货币支付选项。买家付款后资金以 NUSD 入账到商户钱包，商户可通过 Payout 向供应商结算。
+  </Accordion>
+  <Accordion title="企业发薪 / 分润">
+    企业充值稳定币到 NUSDpay 钱包，通过 Payout API 批量向员工或合作方的钱包地址发放薪资和分润。
+  </Accordion>
+  <Accordion title="OTC / 交易所结算">
+    OTC 商家或交易所集成 NUSDpay 作为结算通道。通过 Payin 接收客户入金、划转调拨资金、Payout 处理客户提币，实现完整的资金闭环。
+  </Accordion>
+  <Accordion title="Checkout 收银台">
+    集成 NUSDpay Checkout H5 页面，商户无需自建支付前端，即可为终端用户提供便捷的加密货币支付体验。
+  </Accordion>
+</AccordionGroup>
+
+## 安全与合规
+
+- **API 鉴权**：基于 Ed25519 签名 + Nonce 防重放攻击
+- **风控体系**：内置 AML/KYC 审核、地址白名单、交易限额等多层风控
+- **资金安全**：冷热钱包分离，多签机制保障资金安全
+- **审计追溯**：所有操作记录可追溯，支持合规审计
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="快速开始" icon="rocket" href="/dev/access-process">
+    5 步完成 API 接入，开始处理您的第一笔交易。
+  </Card>
+  <Card title="Payout 方案" icon="money-bill-transfer" href="/guides/payout">
+    了解完整的付款流程、资金流转和手续费模型。
+  </Card>
+</CardGroup>

@@ -1,0 +1,192 @@
+---
+title: "Payout 付款方案"
+description: "了解 NUSDpay Payout 的完整业务流程、资金流转、手续费模型和异常处理。"
+---
+
+
+Payout（付款/代付）是商户通过 NUSDpay 向终端用户发起加密货币付款的能力。商户集成 Payout API 后，可以从自己的 NUSD 钱包余额向终端用户的钱包地址发起链上转账（USDT/USDC），实现提现、分润、退款等业务场景。
+
+## 业务流程
+
+### 时序图
+
+以下是一笔 Payout 交易的完整生命周期：
+
+<Frame caption="Payout 付款时序（点击放大）">
+  <img src="/images/flows/payout-sequence.svg" alt="Payout 付款时序" />
+</Frame>
+
+### 操作步骤
+
+<Steps>
+  <Step title="发起付款请求">
+    调用 [POST /nps/withdraw](/api-reference/endpoint/withdraw) 接口，传入收款地址、金额、链和币种。
+
+    ```json
+    {
+      "request_id": "d8551182-0aee-4346-929e-05c99081352a",
+      "wallet_id": "e9167870-e18b-4e82-8b87-92ec7ede8e45",
+      "to": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46",
+      "amount": "100.00",
+      "chain_id": "BASE_ETH",
+      "token_id": "BASE_USDT"
+    }
+    ```
+
+    <Warning>
+      `request_id` 必须全局唯一，用于防止重复提交。相同的 `request_id` 不会创建新交易。
+    </Warning>
+  </Step>
+
+  <Step title="系统校验与冻结">
+    NUSDpay 系统执行以下校验：
+    - 余额是否充足（含手续费）
+    - 链和币种是否支持
+    - 收款地址格式是否合法
+
+    校验通过后，对应金额从可用余额（available）转入冻结余额（hold）。
+  </Step>
+
+  <Step title="风控审核">
+    交易进入风控流程：
+    - **AML/KYC 审核**：反洗钱与客户身份验证
+    - **地址白名单检查**：收款地址是否在允许列表内
+    - **风控规则引擎**：交易金额、频率等是否触发风控规则
+  </Step>
+
+  <Step title="链上广播与确认">
+    审核通过后，系统构造链上交易并广播到区块链网络。等待区块确认后，交易完成。
+  </Step>
+
+  <Step title="Webhook 通知">
+    交易完成后，系统向商户配置的 Webhook 地址推送 `wallets.transaction.succeeded` 事件。
+  </Step>
+</Steps>
+
+## 资金流转
+
+### 余额模型
+
+商户钱包余额分为两部分：
+
+| 类型 | 说明 |
+|------|------|
+| **可用余额**（available） | 可用于发起 Payout 或划转的金额 |
+| **冻结余额**（hold） | 已发起但尚未完成的 Payout / 划转金额 |
+| **总余额** | 可用余额 + 冻结余额 |
+
+**余额变动示例：**
+
+```
+初始状态：available = 1000, hold = 0
+
+发起 Payout 100 NUSD：
+  → available = 900, hold = 100
+
+Payout 完成（成功）：
+  → available = 900, hold = 0  （扣除手续费后）
+
+Payout 失败：
+  → available = 1000, hold = 0  （冻结释放，余额恢复）
+```
+
+### 备款模式
+
+Payout 资金来自商户的 NUSD 钱包余额。商户需要确保钱包中有足够的可用 NUSD 余额，备款方式有两种：
+
+- **方式一：内部划转** — 从商户的其他项目钱包（如 Payin 收款钱包）划转 NUSD 到 Payout 钱包
+- **方式二：外部充值** — 商户直接向 Payout 钱包地址转入 USDT/USDC，系统自动换算为 NUSD 入账
+
+<Tip>
+  建议在管理后台设置余额告警，当可用余额低于阈值时及时补充资金，避免 Payout 因余额不足失败。
+</Tip>
+
+## 手续费模型
+
+NUSDpay Payout 支持两种手续费模式：
+
+### App 付费模式（商户承担手续费）
+
+手续费由商户承担，终端用户全额到账。
+
+```
+终端用户到账 = 支付金额 × 汇率
+手续费从商户余额额外扣除
+```
+
+**适用场景**：商户希望确保终端用户收到约定的精确金额（如退款、发薪）。
+
+### User 付费模式（终端用户承担手续费）
+
+手续费从支付金额中扣除，终端用户实际到账金额减少。
+
+```
+终端用户到账 = 支付金额 × (1 - 服务费率) × 汇率
+```
+
+**适用场景**：商户希望控制成本，由终端用户承担手续费（如提现）。
+
+### 费率说明
+
+| 费率类型 | 说明 |
+|---------|------|
+| 服务费率 | 按项目配置，支持自定义费率 |
+| 汇率 | 参考市场实时汇率（USDC/USDT），接口返回实际汇率 |
+| Gas 费 | 由平台垫付，已包含在服务费中 |
+
+<Info>
+  具体费率以签约协议为准。您可通过 [查询平台费用](/api-reference/endpoint/fees) 接口获取当前费率配置。
+</Info>
+
+## 交易状态
+
+Payout 交易的完整状态流转：
+
+<Frame caption="Payout 状态流转（点击放大）">
+  <img src="/images/flows/payout-states.svg" alt="Payout 状态流转" />
+</Frame>
+
+| 状态 | 说明 |
+|------|------|
+| Reviewing | 交易审核中 |
+| Pending | 等待处理（含 AML 审核、风控审核、地址白名单检查等子状态） |
+| Confirming | 已广播到链上，等待区块确认 |
+| Completed | 交易完成，资金已到账 |
+| Failed | 交易失败（含具体失败原因） |
+
+详细的状态与子状态说明请参阅 [交易状态说明](/dev/status)。
+
+## 异常处理
+
+### 余额不足
+
+发起 Payout 时，如果可用余额不足（含手续费），接口将返回错误。请确保钱包中有足够的可用余额。
+
+### 风控拦截
+
+交易被风控规则拦截时，状态变为 Failed，冻结资金自动释放。Webhook 通知中包含具体的失败原因。常见拦截原因：
+- 收款地址未在白名单中
+- 单笔金额超过限额
+- 触发 AML 规则
+
+### 链上失败
+
+极少数情况下，交易在链上执行失败（如 Gas 不足、合约异常）。NUSDpay 系统会自动重试或将交易标记为失败，并释放冻结 NUSD 资金。
+
+### Webhook 未收到
+
+如果 Webhook 推送失败（超时或非 200/201 响应），系统会自动重试，最多 10 次。建议：
+- 确保 Webhook 端点在 2 秒内响应
+- 使用 `request_id` 做幂等处理
+- 定期调用 [查询提币记录](/api-reference/endpoint/withdrawList) 接口做对账兜底
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="Payin 收款方案" icon="arrow-down-to-line" href="/guides/payin">
+    了解如何接收客户的加密货币充值。
+  </Card>
+  <Card title="划转方案" icon="arrow-right-arrow-left" href="/guides/transfer">
+    了解项目间资金调拨的使用方式。
+  </Card>
+</CardGroup>
