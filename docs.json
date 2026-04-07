@@ -220,6 +220,22 @@
             ]
           },
           {
+            "group": "对账",
+            "pages": [
+              "api-reference/endpoint/billTxs",
+              "api-reference/endpoint/billFunds",
+              "api-reference/endpoint/billVerifyTx",
+              "api-reference/endpoint/billVerifyTxs"
+            ]
+          },
+          {
+            "group": "工单",
+            "pages": [
+              "api-reference/endpoint/ticketTx",
+              "api-reference/endpoint/ticket"
+            ]
+          },
+          {
             "group": "Webhook 事件",
             "pages": [
               "api-reference/endpoint/webhook-deposit"

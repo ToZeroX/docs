@@ -1229,6 +1229,627 @@
           }
         }
       },
+      "BillTxListRes": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "交易账单数据",
+            "properties": {
+              "total_count": {
+                "type": "string",
+                "format": "integer",
+                "description": "总交易笔数",
+                "example": "22"
+              },
+              "total_amount_in": {
+                "type": "string",
+                "format": "float",
+                "description": "总收入",
+                "example": "14.754"
+              },
+              "total_amount_out": {
+                "type": "string",
+                "format": "float",
+                "description": "总支出",
+                "example": "-17.47906"
+              },
+              "total_fee": {
+                "type": "string",
+                "format": "float",
+                "description": "总手续费",
+                "example": "-4.64649"
+              },
+              "total_actual_in": {
+                "type": "string",
+                "format": "float",
+                "description": "总实际收入",
+                "example": "14.06336051"
+              },
+              "total_actual_out": {
+                "type": "string",
+                "format": "float",
+                "description": "总实际支出",
+                "example": "-13.53913"
+              },
+              "data": {
+                "type": "array",
+                "description": "交易列表",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "wallet_id": {
+                      "type": "string",
+                      "description": "钱包id",
+                      "example": "332cf3e4-af07-46f9-a3da-4aa2cbe3bdd4"
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "description": "交易id",
+                      "example": "83ee917f-d44d-4e54-8e8b-2e78faf00db8"
+                    },
+                    "chain_id": {
+                      "type": "string",
+                      "description": "链id",
+                      "example": "BASE_ETH"
+                    },
+                    "token_id": {
+                      "type": "string",
+                      "description": "币种id",
+                      "example": "BASE_USDT"
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "收款地址",
+                      "example": "0xdc2e6b357766aa4b66f41dc29598379ce7d61d46"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "交易类型",
+                      "example": "Withdrawal"
+                    },
+                    "amount": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "交易金额",
+                      "example": "-0.00033"
+                    },
+                    "fee_ratio": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "交易费率（百分比）",
+                      "example": "0.01"
+                    },
+                    "fee": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "总交易费用",
+                      "example": "-0.0003"
+                    },
+                    "amount_actual": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "实际到账金额",
+                      "example": "-0.003"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "交易状态",
+                      "example": "Completed"
+                    },
+                    "hash": {
+                      "type": "string",
+                      "description": "交易哈希",
+                      "example": "0x718ffc5820c82f3bbdfe523bf1e1f97730bc522987e0e92897caa207580d23"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "交易创建时间（固定值）",
+                      "example": "2026-02-26T02:59:58.913Z"
+                    },
+                    "er": {
+                      "type": "string",
+                      "description": "汇率",
+                      "example": "1"
+                    },
+                    "fee_fixed": {
+                      "type": "string",
+                      "description": "固定手续费",
+                      "example": "0.00"
+                    },
+                    "confirmed_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "交易确认时间",
+                      "example": "2026-02-09T00:43:15.494Z"
+                    },
+                    "completed_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "交易完成时间",
+                      "example": "2026-02-09T00:43:15.494Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，status 非 0 时存在"
+          }
+        }
+      },
+      "BillFundListRes": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "财务账单数据",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "description": "总账单条数",
+                "example": 7
+              },
+              "total_amount_in": {
+                "type": "string",
+                "format": "float",
+                "description": "总收入",
+                "example": "12.664"
+              },
+              "total_amount_out": {
+                "type": "string",
+                "format": "float",
+                "description": "总支出",
+                "example": "5.00303"
+              },
+              "data": {
+                "type": "array",
+                "description": "账单列表",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "wallet_id": {
+                      "type": "string",
+                      "description": "钱包id",
+                      "example": "332cf3e4-af07-46f9-a3da-4aa2cbe3bdd4"
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "description": "交易id",
+                      "example": "aabc16f2-50e2-45f5-b28e-5f1a3595b347"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "交易类型",
+                      "example": "Deposit"
+                    },
+                    "amount": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "收入/支出数量",
+                      "example": "9.9"
+                    },
+                    "balance_before": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "交易前钱包余额",
+                      "example": "0"
+                    },
+                    "balance_after": {
+                      "type": "string",
+                      "format": "float",
+                      "description": "交易后钱包余额",
+                      "example": "9.9"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "账单生成时间（交易完成时间）",
+                      "example": "2025-11-12T22:06:51.993Z"
+                    },
+                    "confirmed_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "交易确认时间",
+                      "example": "2026-02-02T11:28:46.399Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，status 非 0 时存在"
+          }
+        }
+      },
+      "BillVerifyReq": {
+        "type": "object",
+        "description": "至少提供 request_id、transaction_id、hash 之一进行校验。交易类型为 Deposit 时无需传 request_id。其余字段提供任意一个即可参与匹配校验。",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "请求 id，Deposit 类型不适用",
+            "example": ""
+          },
+          "transaction_id": {
+            "type": "string",
+            "description": "交易 id",
+            "example": "8da460a3-75f8-489d-a099-802c38a702b3"
+          },
+          "hash": {
+            "type": "string",
+            "description": "交易哈希",
+            "example": "0x718ffc5820c82f3bbdfe523bf1e1f97730bc522987e0e92897caa207580d23"
+          },
+          "chain_id": {
+            "type": "string",
+            "description": "链 id",
+            "example": "BSC_BNB"
+          },
+          "token_id": {
+            "type": "string",
+            "description": "币种 id",
+            "example": "BSC_USDT"
+          },
+          "to": {
+            "type": "string",
+            "description": "收款地址",
+            "example": "0x16613B97e1c5Bc0a175355947ebc67D6588153C7"
+          },
+          "type": {
+            "type": "string",
+            "description": "交易类型，Deposit / Withdrawal",
+            "example": "Withdrawal"
+          },
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "交易数量",
+            "example": 1
+          },
+          "fee": {
+            "type": "number",
+            "format": "float",
+            "description": "手续费",
+            "example": 0.5
+          },
+          "amount_actual": {
+            "type": "number",
+            "format": "float",
+            "description": "实际到账数量",
+            "example": 0.5
+          },
+          "status": {
+            "type": "string",
+            "description": "交易状态",
+            "example": "Completed"
+          }
+        }
+      },
+      "BillVerifyRes": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "字段匹配结果及交易详情",
+            "properties": {
+              "chain_id_match": { "type": "boolean", "description": "链是否匹配", "example": true },
+              "token_id_match": { "type": "boolean", "description": "币种是否匹配", "example": true },
+              "to_match": { "type": "boolean", "description": "地址是否匹配", "example": true },
+              "status_match": { "type": "boolean", "description": "状态是否匹配", "example": true },
+              "type_match": { "type": "boolean", "description": "类型是否匹配", "example": true },
+              "amount_match": { "type": "boolean", "description": "数量是否匹配", "example": true },
+              "fee_match": { "type": "boolean", "description": "手续费是否匹配", "example": true },
+              "amount_actual_match": { "type": "boolean", "description": "实际到账是否匹配", "example": true },
+              "time_match": { "type": "boolean", "description": "时间是否匹配", "example": true },
+              "result": {
+                "type": "boolean",
+                "description": "整体匹配结果",
+                "example": true
+              },
+              "data": {
+                "type": "object",
+                "description": "交易详情",
+                "properties": {
+                  "wallet_id": {
+                    "type": "string",
+                    "description": "钱包id",
+                    "example": "b2c13dba-7787-4db5-98e3-cff374dc04cd"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "交易类型",
+                    "example": "Deposit"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "交易状态",
+                    "example": "Completed"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "format": "float",
+                    "description": "交易数量",
+                    "example": "2000"
+                  },
+                  "to": {
+                    "type": "string",
+                    "description": "收款地址",
+                    "example": "TWaQTxMj9AFZHuf5XKjuaXCXAhym4Eiqu"
+                  },
+                  "fee_ratio": {
+                    "type": "string",
+                    "description": "手续费比例",
+                    "example": "0.01"
+                  },
+                  "fee_fixed": {
+                    "type": "string",
+                    "description": "固定手续费",
+                    "example": "0.00"
+                  },
+                  "fee": {
+                    "type": "string",
+                    "description": "总费用",
+                    "example": "20"
+                  },
+                  "er": {
+                    "type": "string",
+                    "description": "汇率",
+                    "example": "1"
+                  },
+                  "amount_actual": {
+                    "type": "string",
+                    "description": "实际到账数量",
+                    "example": "1980"
+                  },
+                  "hash": {
+                    "type": "string",
+                    "description": "交易哈希",
+                    "example": "c4caed59a0dec787fca9c8f24555ece92dd6cb235f54595f11e9a409b318f31"
+                  },
+                  "chain_id": {
+                    "type": "string",
+                    "description": "链id",
+                    "example": "TRON"
+                  },
+                  "token_id": {
+                    "type": "string",
+                    "description": "币种id",
+                    "example": "TRON_USDT"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "交易创建时间",
+                    "example": "2025-10-26T22:46:55.268Z"
+                  },
+                  "confirmed_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "交易确认时间",
+                    "example": "2025-10-26T22:47:50.847Z"
+                  },
+                  "completed_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "交易完成时间",
+                    "example": "2025-10-26T22:47:50.847Z"
+                  }
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，status 非 0 时存在"
+          }
+        }
+      },
+      "BillVerifyBatchReq": {
+        "type": "object",
+        "properties": {
+          "txs": {
+            "type": "array",
+            "description": "需要校验的交易列表。每项至少提供 request_id、transaction_id、hash 之一；交易类型为 Deposit 时无需传 request_id；其余字段任意提供用于匹配。",
+            "items": {
+              "$ref": "#/components/schemas/BillVerifyReq"
+            }
+          }
+        },
+        "required": [
+          "txs"
+        ]
+      },
+      "BillVerifyBatchRes": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "array",
+            "description": "批量校验结果列表",
+            "items": {
+              "type": "object",
+              "description": "单条交易的匹配结果与详情",
+              "properties": {
+                "chain_id_match": { "type": "boolean", "description": "链是否匹配", "example": true },
+                "token_id_match": { "type": "boolean", "description": "币种是否匹配", "example": true },
+                "to_match": { "type": "boolean", "description": "地址是否匹配", "example": true },
+                "status_match": { "type": "boolean", "description": "状态是否匹配", "example": true },
+                "type_match": { "type": "boolean", "description": "类型是否匹配", "example": true },
+                "amount_match": { "type": "boolean", "description": "数量是否匹配", "example": true },
+                "fee_match": { "type": "boolean", "description": "手续费是否匹配", "example": true },
+                "amount_actual_match": { "type": "boolean", "description": "实际到账是否匹配", "example": true },
+                "time_match": { "type": "boolean", "description": "时间是否匹配", "example": true },
+                "result": {
+                  "type": "boolean",
+                  "description": "整体匹配结果",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "description": "交易详情",
+                  "properties": {
+                    "wallet_id": { "type": "string", "description": "钱包id", "example": "b2c13dba-7787-4db5-98e3-cff374dc04cd" },
+                    "type": { "type": "string", "description": "交易类型", "example": "Deposit" },
+                    "status": { "type": "string", "description": "交易状态", "example": "Completed" },
+                    "amount": { "type": "string", "format": "float", "description": "交易数量", "example": "2000" },
+                    "to": { "type": "string", "description": "收款地址", "example": "TWaQTxMj9AFZHuf5XKjuaXCXAhym4Eiqu" },
+                    "fee_ratio": { "type": "string", "description": "手续费比例", "example": "0.01" },
+                    "fee_fixed": { "type": "string", "description": "固定手续费", "example": "0.00" },
+                    "fee": { "type": "string", "description": "总费用", "example": "20" },
+                    "er": { "type": "string", "description": "汇率", "example": "1" },
+                    "amount_actual": { "type": "string", "description": "实际到账数量", "example": "1980" },
+                    "hash": { "type": "string", "description": "交易哈希", "example": "c4caed59a0dec787fca9c8f24555ece92dd6cb235f54595f11e9a409b318f31" },
+                    "chain_id": { "type": "string", "description": "链id", "example": "TRON" },
+                    "token_id": { "type": "string", "description": "币种id", "example": "TRON_USDT" },
+                    "created_at": { "type": "string", "format": "date-time", "description": "交易创建时间", "example": "2025-10-26T22:46:55.268Z" },
+                    "confirmed_at": { "type": "string", "format": "date-time", "description": "交易确认时间", "example": "2025-10-26T22:47:50.847Z" },
+                    "completed_at": { "type": "string", "format": "date-time", "description": "交易完成时间", "example": "2025-10-26T22:47:50.847Z" }
+                  }
+                }
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，status 非 0 时存在"
+          }
+        }
+      },
+      "TicketTxReq": {
+        "type": "object",
+        "required": [
+          "transaction_id"
+        ],
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "description": "交易id",
+            "example": "8da460a3-75f8-489d-a099-802c38a702b3"
+          },
+          "abnormals": {
+            "type": "string",
+            "description": "异常或不匹配的字段，多个用逗号分隔，如 amount,fee,status",
+            "example": "amount,status"
+          },
+          "desc": {
+            "type": "string",
+            "description": "异常说明",
+            "example": "amount and status not match"
+          }
+        }
+      },
+      "TicketTxRes": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "工单创建结果",
+            "properties": {
+              "transaction_id": {
+                "type": "string",
+                "description": "交易id",
+                "example": "8da460a3-75f8-489d-a099-802c38a702b3"
+              },
+              "ticket_id": {
+                "type": "string",
+                "description": "工单id",
+                "example": "3792b891-2066-41d6-be30-051b917cdd75"
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，status 非 0 时存在"
+          }
+        }
+      },
+      "TicketDetailRes": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "状态码，0 表示成功。",
+            "example": 0
+          },
+          "data": {
+            "type": "object",
+            "description": "工单详情",
+            "properties": {
+              "ticket_id": {
+                "type": "string",
+                "description": "工单id",
+                "example": "81e83b93-8c6c-4153-8df6-8e1d74d25bf3"
+              },
+              "transaction_id": {
+                "type": "string",
+                "description": "交易id",
+                "example": "7d7307fe-f6e6-44ed-8e2e-48ddcca88d23"
+              },
+              "abnormals": {
+                "type": "string",
+                "description": "异常或不匹配字段，多个用逗号分隔",
+                "example": "amount,status"
+              },
+              "desc": {
+                "type": "string",
+                "description": "异常说明",
+                "example": "amount and status not match"
+              },
+              "status": {
+                "type": "string",
+                "description": "工单状态",
+                "example": "Pending"
+              },
+              "create_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "创建时间",
+                "example": "2026-04-01T07:01:28.192Z"
+              },
+              "update_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "更新时间",
+                "example": "2026-04-01T07:01:28.192Z"
+              }
+            }
+          },
+          "msg": {
+            "type": "string",
+            "description": "错误消息，status 非 0 时存在"
+          }
+        }
+      },
       "AddressReq": {
         "type": "object",
         "required": [
@@ -2152,6 +2773,417 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WithdrawListRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/bill/txs": {
+      "get": {
+        "description": "获取交易账单列表",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "wallet_id",
+            "in": "query",
+            "description": "钱包id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "332cf3e4-af07-46f9-a3da-4aa2cbe3bdd4"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "查询的起始时间戳，单位：秒",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1716926400
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "查询的结束时间戳，单位：秒",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1772294400
+            }
+          },
+          {
+            "name": "time_type",
+            "in": "query",
+            "description": "start/end 的匹配方式：Created 按交易创建时间；Confirmed 按交易确认时间；Completed 按交易完成时间，默认 Created",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Created",
+                "Confirmed",
+                "Completed"
+              ],
+              "default": "Created"
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "description": "交易类型，多个用逗号分隔",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Deposit,Withdrawal"
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "交易状态，多个用逗号分隔",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Processing,Approved"
+            }
+          },
+          {
+            "name": "chain_ids",
+            "in": "query",
+            "description": "链id，多个用逗号分隔",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "BASE_ETH,BSC_BNB"
+            }
+          },
+          {
+            "name": "token_ids",
+            "in": "query",
+            "description": "币种id，多个用逗号分隔",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "ARBITRUM_USDT,BSC_USDT"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "当前页码，默认 1",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "description": "每页条数，最大 1000，默认 100",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "maximum": 1000,
+              "example": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回交易账单列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillTxListRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回交易账单列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillTxListRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/bill/funds": {
+      "get": {
+        "description": "获取财务账单列表",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "wallet_id",
+            "in": "query",
+            "description": "钱包id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "332cf3e4-af07-46f9-a3da-4aa2cbe3bdd4"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "查询的起始时间戳，单位：秒",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1716926400
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "查询的截止时间戳，单位：秒",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1772294400
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "当前页码，默认 1",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "description": "每页条数，最大 1000，默认 100",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "maximum": 1000,
+              "example": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回财务账单列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillFundListRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回财务账单列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillFundListRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/bill/verify/tx": {
+      "post": {
+        "description": "单笔交易校验，支持按 request_id / transaction_id / hash 或字段组合匹配校验。",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillVerifyReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功，返回校验结果与交易详情",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillVerifyRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回校验结果与交易详情",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillVerifyRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/bill/verify/txs": {
+      "post": {
+        "description": "批量交易校验，支持按 request_id / transaction_id / hash 或字段组合批量匹配校验。",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillVerifyBatchReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功，返回批量校验结果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillVerifyBatchRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回批量校验结果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillVerifyBatchRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/ticket/tx": {
+      "post": {
+        "description": "添加异常交易工单",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketTxReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功，返回工单id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketTxRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回工单id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketTxRes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nps/ticket": {
+      "get": {
+        "description": "获取工单详情",
+        "security": [
+          {
+            "BizApiKey": [],
+            "BizApiNonce": [],
+            "BizApiSignature": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "query",
+            "description": "工单id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "81e83b93-8c6c-4153-8df6-8e1d74d25bf3"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功，返回工单详情",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketDetailRes"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "请求成功，返回工单详情",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketDetailRes"
                 }
               }
             }
