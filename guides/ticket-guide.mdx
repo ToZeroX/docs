@@ -1,0 +1,42 @@
+---
+title: "异常工单处理"
+description: "记录并追踪交易差异：创建工单与查看工单详情。"
+---
+
+当校验发现交易金额、手续费或状态不一致时，可通过工单闭环处理。
+
+## 场景
+
+- 自动对账发现差异，需要人工复核与处理
+- 客服/运营手动标记异常交易，需在后台跟进
+
+## 接口速览
+
+- `POST /nps/ticket/tx`：创建异常交易工单（传入 transaction_id、异常字段 abnormals、说明 desc）
+- `GET /nps/ticket`：查询工单详情（状态、异常字段、创建/更新时间）
+
+## 使用流程
+
+<Steps>
+  <Step title="创建工单">
+    对不匹配的交易调用 `POST /nps/ticket/tx`，写入异常字段与说明。
+  </Step>
+  <Step title="跟踪处理">
+    通过 `GET /nps/ticket` 查看工单状态与更新时间，并在内部流程中推进处理。
+  </Step>
+</Steps>
+
+## 与后台的关系
+
+接口可与管理后台工单模块配合使用：后台侧用于人工审核与记录，接口侧用于自动化创建与查询。
+
+## 相关链接
+
+<CardGroup cols={2}>
+  <Card title="对账与校验接口" icon="plug" href="/guides/bill-check">
+    先执行账单查询与校验，再将差异生成工单。
+  </Card>
+  <Card title="接口鉴权" icon="shield-check" href="/api-reference/introduction">
+    查看签名与鉴权示例，统一调用方式。
+  </Card>
+</CardGroup>

@@ -1,0 +1,50 @@
+---
+title: "对账与校验接口指南"
+description: "交易账单查询、单笔/批量校验的接口概览与使用路径。"
+---
+
+NUSDpay 提供账单查询与校验接口，帮助财务和技术团队完成自动化对账与差异定位。
+
+## 场景
+
+- 财务日常对账、结算前核对收支与手续费
+- 渠道或代付链路的交易差异排查
+- 自动化脚本比对后，向后续工单处理衔接
+
+## 接口速览
+
+- 账单查询  
+  - `GET /nps/bill/txs`：交易账单列表（含汇总）  
+  - `GET /nps/bill/funds`：财务账单列表（含汇总）
+- 校验服务  
+  - `POST /nps/bill/verify/tx`：单笔交易校验  
+  - `POST /nps/bill/verify/txs`：批量交易校验
+
+## 推荐流程
+
+<Steps>
+  <Step title="获取账单数据">
+    通过 `GET /nps/bill/txs` 或 `GET /nps/bill/funds` 拉取待核对区间的账单与汇总数据。
+  </Step>
+  <Step title="执行校验">
+    使用单笔或批量校验接口，将自有系统记录与账单逐字段匹配（链、币种、金额、手续费、状态、时间）。
+  </Step>
+  <Step title="处理差异">
+    若存在不匹配，记录差异字段，后续可生成异常工单（见“异常工单处理”）。
+  </Step>
+</Steps>
+
+## 签名与调用
+
+上述接口均需携带 `BIZ-API-KEY`、`Biz-Api-Nonce`、`Biz-Api-Signature`，签名方式见「接口鉴权」章节。
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="异常工单处理" icon="clipboard-list" href="/guides/ticket-guide">
+    了解如何提交异常交易工单并跟踪处理进度。
+  </Card>
+  <Card title="对账与报表（后台）" icon="file-invoice" href="/guides/reconciliation">
+    查看管理后台导出报表的字段与对账流程。
+  </Card>
+</CardGroup>
