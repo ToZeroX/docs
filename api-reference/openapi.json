@@ -1479,7 +1479,7 @@
       },
       "BillVerifyReq": {
         "type": "object",
-        "description": "1. request_id、transaction_id、hash 默认至少使用一个参数，其中交易类型为 Deposit 时，request_id 不适用\n2. 断言参数需至少提供一个进行校验\n3. amount_delta：数量容差，默认：0.001\n4. time：交易时间可选，单位：秒，默认：0\n5. time_type：时间匹配类型：=Created，按交易的创建时间；=Confirmed，按交易的确认时间；=Completed，按交易的完成时间，默认：Created\n6. time_delta：时间容差，单位：秒",
+        "description": "1. request_id、transaction_id、hash 默认至少使用一个参数，其中交易类型为 Deposit 时，request_id 不适用\n2. 剩余参数需至少提供一个进行校验\n3. amount_delta：数量容差，默认：0.001\n4. time：交易时间可选，单位：秒\n5. time_type：时间匹配类型：=Created，按交易的创建时间；=Confirmed，按交易的确认时间；=Completed，按交易的完成时间，默认：Created\n6. time_delta：时间容差，单位：秒，默认：10",
         "properties": {
           "request_id": {
             "type": "string",
@@ -1547,7 +1547,7 @@
           },
           "time": {
             "type": "integer",
-            "description": "交易时间，可选，单位：秒，默认：0",
+            "description": "交易时间，可选，单位：秒",
             "example": 0
           },
           "time_type": {
@@ -1690,7 +1690,7 @@
       },
       "BillVerifyBatchReq": {
         "type": "object",
-        "description": "1. request_id、transaction_id、hash 默认至少使用一个参数，其中交易类型为 Deposit 时，request_id 不适用\n2. 断言参数需至少提供一个进行校验\n3. amount_delta：数量容差，默认：0.001\n4. time：交易时间可选，单位：秒，默认：0\n5. time_type：时间匹配类型：=Created，按交易的创建时间；=Confirmed，按交易的确认时间；=Completed，按交易的完成时间，默认：Created\n6. time_delta：时间容差，单位：秒",
+        "description": "1. request_id、transaction_id、hash 默认至少使用一个参数，其中交易类型为 Deposit 时，request_id 不适用\n2. 剩余参数需至少提供一个进行校验\n3. amount_delta：数量容差，默认：0.001\n4. time：交易时间可选，单位：秒\n5. time_type：时间匹配类型：=Created，按交易的创建时间；=Confirmed，按交易的确认时间；=Completed，按交易的完成时间，默认：Created\n6. time_delta：时间容差，单位：秒，默认：10",
         "properties": {
           "txs": {
             "type": "array",
