@@ -6,9 +6,9 @@
   },
   "name": "NUSDpay",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#0B0F1F",
+    "light": "#3A4156",
+    "dark": "#050609"
   },
   "favicon": "/favicon.ico",
   "api": {
@@ -248,8 +248,8 @@
     ]
   },
   "logo": {
-    "light": "/logo/light.png",
-    "dark": "/logo/dark.png"
+    "light": "/logo/lockup-compact.svg",
+    "dark": "/logo/lockup-compact-dark.svg"
   },
   "navbar": {},
   "footer": {}
